@@ -1,0 +1,72 @@
+name: rick_morty_flutter
+description: Praxis For Flutter
+
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+version: 1.0.0+1
+
+environment:
+  sdk: ">2.12.0 <=3.3.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  flutter_bloc: ^8.1.1
+  url_strategy: ^0.2.0
+  bloc: ^8.1.0
+  go_router: ^6.0.1
+  flex_color_scheme: ^6.0.1
+  google_fonts: ^3.0.1
+  cupertino_icons: ^1.0.5
+  get_it: ^7.2.0
+  injectable: ^1.5.3
+  connectivity_plus: ^2.3.9
+  firebase_core_platform_interface: 4.5.1
+  firebase_messaging: ^13.0.4
+  url_launcher: ^6.1.6
+  shared_preferences: ^2.0.15
+  equatable: ^2.0.5
+  firebase_core: ^1.24.0
+  firebase_auth: ^3.11.2
+  firebase_analytics: ^9.3.8
+  firebase_app_check: ^0.0.9+1
+  firebase_dynamic_links: ^4.3.10
+  firebase_in_app_messaging: ^0.6.0+27
+  firebase_app_installations: ^0.1.1+10
+  google_sign_in: ^5.4.2
+  flutter_local_notifications: ^12.0.1+1
+  permission_handler: ^10.1.0
+  shimmer: ^2.0.0
+  uuid: ^3.0.6
+  intl: ^0.17.0
+
+  clean_architecture:
+    path: ./clean_architecture
+  domain:
+    path: ./domain
+  data:
+    path: ./data
+
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  integration_test:
+    sdk: flutter
+  flutter_driver:
+    sdk: flutter
+  test: any
+  flutter_lints: ^2.0.1
+  injectable_generator: any
+  build_runner: any
+  flutter_gen_runner: any
+  bloc_test: ^9.1.0
+
+flutter:
+  uses-material-design: true
+  generate: true
+#  assets:
+#    - assets/logos/
+#    - assets/images/
+#    - assets/icons/

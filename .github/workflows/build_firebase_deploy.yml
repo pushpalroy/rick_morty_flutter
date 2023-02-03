@@ -1,0 +1,189 @@
+# This is basic workflow to help you get started with Actions
+
+name: Build,Test Release app to Firebase Hosting
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  beta_ios:
+    name: Upload iOS Beta to Firebase App Distribution
+    needs: [ build_ios ]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: set up JDK 1.8
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+      - name: Download Artifact
+        uses: actions/download-artifact@master
+        with:
+          name: release-ios
+      - name: Upload IPA
+        uses: wzieba/Firebase-Distribution-Github-Action@v1.3.4
+        with:
+          appId: ${{secrets.FIREBASE_IOS_APPID}}
+          token: ${{secrets.FIREBASE_TOKEN}}
+          groups: testers
+          file: rick_morty_flutter.ipa
+
+  build_ios:
+    runs-on: macos-latest
+    if: "!contains(github.event.head_commit.message, 'ci skip')"
+    steps:
+      - name: Export Release Timestamp
+        run: echo "APP_VERSION=release_$(date +'%Y-%m-%d_%H-%m-%S')" >> $GITHUB_ENV
+      - uses: actions/checkout@v3
+      - name: Create GoogleService-Info.plist from secrets
+        id: write_fileGoogleServiceInfoIosPlist
+        uses: timheuer/base64-to-file@v1.1
+        with:
+          fileName: 'GoogleService-Info.plist'
+          fileDir: '/Users/runner/work/PraxisFlutter/PraxisFlutter/ios/'
+          encodedString: ${{ secrets.GoogleServiceInfo }}
+
+      # Install the Apple certificate and provisioning profile
+      - name: Install the Apple certificate and provisioning profile
+        env:
+          BUILD_CERTIFICATE_BASE64: ${{ secrets.P12_BASE64 }}
+          P12_PASSWORD: ${{ secrets.P12_PASSWORD }}
+          BUILD_PROVISION_PROFILE_BASE64: ${{ secrets.PROVISIONING_PROFILE_BASE64 }}
+          KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}
+        run: |
+          # create variables
+          CERTIFICATE_PATH=$RUNNER_TEMP/build_certificate.p12
+          PP_PATH=$RUNNER_TEMP/build_pp.mobileprovision
+          KEYCHAIN_PATH=$RUNNER_TEMP/app-signing.keychain-db
+          # import certificate and provisioning profile from secrets
+          echo -n "$BUILD_CERTIFICATE_BASE64" | base64 --decode --output $CERTIFICATE_PATH
+          echo -n "$BUILD_PROVISION_PROFILE_BASE64" | base64 --decode --output $PP_PATH
+          # create temporary keychain
+          security create-keychain -p "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
+          security set-keychain-settings -lut 21600 $KEYCHAIN_PATH
+          security unlock-keychain -p "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
+          # import certificate to keychain
+          security import $CERTIFICATE_PATH -P "$P12_PASSWORD" -A -t cert -f pkcs12 -k $KEYCHAIN_PATH
+          security list-keychain -d user -s $KEYCHAIN_PATH
+          # apply provisioning profile
+          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
+          cp $PP_PATH ~/Library/MobileDevice/Provisioning\ Profiles
+
+      - uses: actions/setup-java@v1
+        with:
+          java-version: '12.x'
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+      - name: 'Run flutter pub get'
+        run: flutter pub get
+
+      - name: Building IPA
+        run: flutter build ipa --release --flavor production --target lib/main_production.dart --export-options-plist=ios/Runner/ExportOptions.plist
+
+      - name: Upload iPA
+        uses: actions/upload-artifact@master
+        with:
+          name: release-ios
+          path: build/ios/ipa/*.ipa
+
+      # Important! Cleanup: remove the certificate and provisioning profile from the runner!
+      - name: Clean up keychain and provisioning profile
+        if: ${{ always() }}
+        run: |
+          security delete-keychain $RUNNER_TEMP/app-signing.keychain-db
+          rm ~/Library/MobileDevice/Provisioning\ Profiles/build_pp.mobileprovision
+
+
+  build_deploy_web:
+    runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, 'ci skip')"
+    steps:
+      - name: Export Release Timestamp
+        run: echo "APP_VERSION=release_$(date +'%Y-%m-%d_%H-%m-%S')" >> $GITHUB_ENV
+      - uses: actions/checkout@v3
+      - uses: actions/setup-java@v1
+        with:
+          java-version: '12.x'
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+      - name: 'Run flutter pub get'
+        run: flutter pub get
+
+      - name: Enable flutter web
+        run: flutter config --enable-web
+      - name: 'Build Web App'
+        run: flutter build web --target lib/main_production.dart
+      - name: deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./build/web
+      - name: Deploy to Firebase Hosting
+        uses: w9jds/firebase-action@master
+        with:
+          args: deploy --only hosting
+        env:
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+
+  beta_apk:
+    name: Upload Android Beta to Firebase App Distribution
+    needs: [ build_android ]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: set up JDK 1.8
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+      - name: Download Artifact
+        uses: actions/download-artifact@master
+        with:
+          name: android-build
+      - name: Upload APK
+        uses: wzieba/Firebase-Distribution-Github-Action@v1.3.4
+        with:
+          appId: ${{secrets.FIREBASE_APP_ID}}
+          token: ${{secrets.FIREBASE_TOKEN}}
+          groups: testers
+          file: app-production-release.apk
+
+  build_android:
+    runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, 'ci skip')"
+    steps:
+      - name: Export Release Timestamp
+        run: echo "APP_VERSION=release_$(date +'%Y-%m-%d_%H-%m-%S')" >> $GITHUB_ENV
+      - uses: actions/checkout@v3
+      - name: Decode Keystore
+        id: decode_keystore
+        uses: timheuer/base64-to-file@v1.1
+        with:
+          fileName: 'praxis_keystore.jks'
+          fileDir: '/home/runner/work/PraxisFlutter/PraxisFlutter/android/app/keystore/'
+          encodedString: ${{ secrets.KEYSTORE }}
+      - uses: actions/setup-java@v1
+        with:
+          java-version: '12.x'
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+      - name: 'Run flutter pub get'
+        run: flutter pub get
+      - name: 'Build Android apk'
+        run: flutter build apk --release --flavor production --target lib/main_production.dart
+        env:
+          SIGNING_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
+          SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
+          SIGNING_STORE_PASSWORD: ${{ secrets.SIGNING_STORE_PASSWORD }}
+      - name: Upload APK
+        uses: actions/upload-artifact@master
+        with:
+          name: android-build
+          path: build/app/outputs/flutter-apk

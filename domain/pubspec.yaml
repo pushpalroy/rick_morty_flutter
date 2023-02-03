@@ -1,0 +1,11 @@
+name: domain
+description: A new Flutter project.
+version: 0.0.1
+
+environment:
+  sdk: ">2.15.1 <=3.3.0"
+
+dependencies:
+  equatable: ^2.0.5
+  clean_architecture:
+    path: ../clean_architecture
