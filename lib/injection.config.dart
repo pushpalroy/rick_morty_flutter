@@ -9,6 +9,7 @@ import 'package:get_it/get_it.dart' as _i1;
 import 'package:injectable/injectable.dart' as _i2;
 
 import 'infrastructure/notifications/firebase_messaging.dart' as _i3;
+import 'ui/model/characters/ui_character_mapper.dart' as _i5;
 import 'ui/model/jokes/ui_jokes_mapper.dart'
     as _i4; // ignore_for_file: unnecessary_lambdas
 
@@ -25,9 +26,9 @@ extension GetItInjectableX on _i1.GetIt {
       environment,
       environmentFilter,
     );
-    gh.factory<_i3.RmFirebaseMessaging>(
-        () => _i3.RmFirebaseMessaging());
+    gh.factory<_i3.RmFirebaseMessaging>(() => _i3.RmFirebaseMessaging());
     gh.factory<_i4.UIJokeMapper>(() => _i4.UIJokeMapper());
+    gh.factory<_i5.UiCharacterMapper>(() => _i5.UiCharacterMapper());
     return this;
   }
 }
