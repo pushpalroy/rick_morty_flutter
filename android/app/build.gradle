@@ -75,17 +75,17 @@ android {
         production {
             dimension "default"
             applicationIdSuffix ""
-            manifestPlaceholders = [appName: "FlutterPraxis"]
+            manifestPlaceholders = [appName: "Rick and Morty Flutter"]
         }
         staging {
             dimension "default"
             applicationIdSuffix ".stg"
-            manifestPlaceholders = [appName: "[STG] FlutterPraxis"]
+            manifestPlaceholders = [appName: "[STG] Rick and Morty Flutter"]
         }
         development {
             dimension "default"
             applicationIdSuffix ".dev"
-            manifestPlaceholders = [appName: "[DEV] FlutterPraxis"]
+            manifestPlaceholders = [appName: "[DEV] Rick and Morty Flutter"]
         }
     }
 

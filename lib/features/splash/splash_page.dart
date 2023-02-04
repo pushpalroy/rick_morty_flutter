@@ -78,5 +78,5 @@ class SplashView extends StatelessWidget {
     );
   }
 
-  Text praxisPlayground() => const Text("Welcome to Praxis Playground");
+  Text praxisPlayground() => const Text("Welcome to Rick and Morty Flutter");
 }
