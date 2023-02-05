@@ -1,10 +1,10 @@
 import 'package:rick_morty_flutter/ui/model/ui_model.dart';
 
 class UiCharacter extends UIModel {
-  String value;
-  String id;
+  String name;
+  String image;
 
-  UiCharacter(this.id, this.value);
+  UiCharacter(this.name, this.image);
 }
 
 class UiCharacterList extends UIModel {

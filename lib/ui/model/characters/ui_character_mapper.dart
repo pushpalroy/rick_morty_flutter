@@ -7,13 +7,15 @@ import 'package:domain/entities/characters/dm_character.dart';
 class UiCharacterMapper extends UiModelMapper<CharacterList, UiCharacterList> {
   @override
   CharacterList mapToDomain(UiCharacterList modelItem) {
-    return CharacterList(
-        modelItem.characters.map((e) => Character(e.id, e.value)).toList());
+    return CharacterList(modelItem.characters
+        .map((e) => Character(e.name, e.image))
+        .toList());
   }
 
   @override
   UiCharacterList mapToPresentation(CharacterList model) {
-    return UiCharacterList(
-        model.characterList.map((e) => UiCharacter(e.id, e.value)).toList());
+    return UiCharacterList(model.characterList
+        .map((e) => UiCharacter(e.name, e.image))
+        .toList());
   }
 }

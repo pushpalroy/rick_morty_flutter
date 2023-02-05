@@ -43,8 +43,8 @@ class JokeListPage extends StatelessWidget {
             children: [
               state is Loading
                   ? const Align(
-                      child: RmProgressBar(),
                       alignment: Alignment.center,
+                      child: RmProgressBar(),
                     )
                   : state is Success
                       ? buildJokesList(state as Success)

@@ -26,6 +26,7 @@ dependencies:
   domain:
     path: ../domain
   sqflite: ^2.0.3+1
+  graphql_flutter: ^5.1.2
 
 
 dev_dependencies:

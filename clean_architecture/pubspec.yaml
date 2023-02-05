@@ -9,4 +9,4 @@ dependencies:
   flutter:
     sdk: flutter
   logging: ^1.0.2
-  rxdart: ^0.26.0
+  rxdart: ^0.27.7
