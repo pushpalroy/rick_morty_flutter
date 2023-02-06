@@ -10,20 +10,19 @@ class RickMortyServices {
 
   RickMortyServices(this.service);
 
-  Future<ApiResponse<DTCharactersList>> getCharactersList() async {
-    const query = '''
+  Future<ApiResponse<DTCharactersList>> getCharactersList(int page) async {
+    final query = '''
     query {
-        characters(page: 1, filter: { name: "" }) {
+        characters(page: $page, filter: { name: "" }) {
           info {
             count
           }
           results {
+            id
             name
             status
             image
             species
-            type
-            gender
           }
         }
       }

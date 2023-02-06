@@ -12,7 +12,7 @@ class CharactersPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => CharactersCubit(),
-      child: BlocListener<CharactersCubit, UiState<UiCharacterList>>(
+      child: BlocListener<CharactersCubit, UiState<List<UiCharacter>>>(
         child: const CharactersListView(),
         listener: (context, state) {},
       ),

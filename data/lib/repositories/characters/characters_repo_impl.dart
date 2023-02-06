@@ -14,8 +14,8 @@ class CharactersRepositoryImpl implements CharactersRepository {
   CharactersRepositoryImpl(this.services, this.mapper);
 
   @override
-  Future<ApiResponse<CharacterList>> getRickAndMortyCharacters() async {
-    final response = await services.getCharactersList();
+  Future<ApiResponse<CharacterList>> getRickAndMortyCharacters(int page) async {
+    final response = await services.getCharactersList(page);
     if (response is Success) {
       try {
         final characterList = (response as Success).data as DTCharactersList;

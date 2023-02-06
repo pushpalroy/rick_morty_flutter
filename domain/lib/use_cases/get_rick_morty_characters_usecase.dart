@@ -5,23 +5,30 @@ import 'package:domain/entities/api_response.dart';
 import 'package:domain/entities/characters/dm_character.dart';
 import 'package:domain/repositories/characters/characters_repo.dart';
 
+import '../validations.dart';
+
 class GetRickMortyCharactersUseCase
-    extends UseCase<CharacterListUseCaseResponse, void> {
+    extends UseCase<CharacterListUseCaseResponse, int> {
   final CharactersRepository repo;
 
   GetRickMortyCharactersUseCase(this.repo);
 
   @override
   Future<Stream<CharacterListUseCaseResponse>> buildUseCaseStream(
-      void params) async {
+      int? page) async {
     final controller = StreamController<CharacterListUseCaseResponse>();
     try {
-      // Fetch from repository
-      final characterList = await repo.getRickAndMortyCharacters();
-      // Adding it triggers the .onNext() in the `Observer`
-      controller.add(CharacterListUseCaseResponse(characterList));
-      logger.finest('GetRickMortyCharactersUseCase successful.');
-      controller.close();
+      if (page != null) {
+        // Fetch from repository
+        final characterList = await repo.getRickAndMortyCharacters(page);
+        // Adding it triggers the .onNext() in the `Observer`
+        controller.add(CharacterListUseCaseResponse(characterList));
+        logger.finest('GetRickMortyCharactersUseCase successful.');
+        controller.close();
+      } else {
+        logger.severe('page is null.');
+        controller.addError(InvalidRequestException());
+      }
     } catch (e) {
       logger.severe('GetRickMortyCharactersUseCase failure.');
       controller.addError(e);

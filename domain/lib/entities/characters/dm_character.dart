@@ -1,8 +1,11 @@
 class Character {
+  final String id;
   final String name;
   final String image;
+  final String status;
+  final String species;
 
-  Character(this.name, this.image);
+  Character(this.id, this.name, this.image, this.status, this.species);
 }
 
 class CharacterList {

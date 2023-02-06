@@ -8,14 +8,14 @@ class UiCharacterMapper extends UiModelMapper<CharacterList, UiCharacterList> {
   @override
   CharacterList mapToDomain(UiCharacterList modelItem) {
     return CharacterList(modelItem.characters
-        .map((e) => Character(e.name, e.image))
+        .map((e) => Character(e.id, e.name, e.image, e.status, e.species))
         .toList());
   }
 
   @override
   UiCharacterList mapToPresentation(CharacterList model) {
     return UiCharacterList(model.characterList
-        .map((e) => UiCharacter(e.name, e.image))
+        .map((e) => UiCharacter(e.id, e.name, e.image, e.status, e.species))
         .toList());
   }
 }

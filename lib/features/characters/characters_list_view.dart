@@ -18,6 +18,7 @@ class CharactersListView extends StatefulWidget {
 class _CharactersListViewState extends State<CharactersListView>
     with TickerProviderStateMixin {
   AnimationController? animationController;
+  var page = 1;
 
   @override
   void initState() {
@@ -33,7 +34,7 @@ class _CharactersListViewState extends State<CharactersListView>
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<CharactersCubit, UiState<UiCharacterList>>(
+    return BlocBuilder<CharactersCubit, UiState<List<UiCharacter>>>(
         builder: (context, state) {
       return state is Loading
           ? const Align(
@@ -50,41 +51,55 @@ class _CharactersListViewState extends State<CharactersListView>
                       if (!snapshot.hasData) {
                         return const SizedBox();
                       } else {
-                        return GridView(
-                          padding: const EdgeInsets.all(8),
-                          physics: const BouncingScrollPhysics(),
-                          scrollDirection: Axis.vertical,
-                          gridDelegate:
-                              const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2,
-                            mainAxisSpacing: 24.0,
-                            crossAxisSpacing: 16.0,
-                            childAspectRatio: 0.8,
-                          ),
-                          children: List<Widget>.generate(
-                            (state as Success).data.characters.length,
-                            (int index) {
-                              final int count =
-                                  (state as Success).data.characters.length;
-                              final Animation<double> animation =
-                                  Tween<double>(begin: 0.0, end: 1.0).animate(
-                                CurvedAnimation(
-                                  parent: animationController!,
-                                  curve: Interval((1 / count) * index, 1.0,
-                                      curve: Curves.fastOutSlowIn),
-                                ),
-                              );
-                              animationController?.forward();
-                              return CategoryView(
-                                callback: widget.callBack,
-                                character:
-                                    (state as Success).data.characters[index],
-                                animation: animation,
-                                animationController: animationController,
-                              );
+                        return NotificationListener<ScrollNotification>(
+                            onNotification: (scrollNotification) {
+                              if (scrollNotification.metrics.pixels ==
+                                  scrollNotification.metrics.maxScrollExtent) {
+                                setState(() {
+                                  page++;
+                                  context
+                                      .read<CharactersCubit>()
+                                      .loadCharacters(page: page);
+                                });
+                              }
+                              return false;
                             },
-                          ),
-                        );
+                            child: GridView(
+                              padding: const EdgeInsets.all(8),
+                              physics: const BouncingScrollPhysics(),
+                              scrollDirection: Axis.vertical,
+                              gridDelegate:
+                                  const SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 2,
+                                mainAxisSpacing: 24.0,
+                                crossAxisSpacing: 16.0,
+                                childAspectRatio: 0.8,
+                              ),
+                              children: List<Widget>.generate(
+                                (state as Success).data.length,
+                                (int index) {
+                                  final int count =
+                                      (state as Success).data.length;
+                                  final Animation<double> animation =
+                                      Tween<double>(begin: 0.0, end: 1.0)
+                                          .animate(
+                                    CurvedAnimation(
+                                      parent: animationController!,
+                                      curve: Interval((1 / count) * index, 1.0,
+                                          curve: Curves.fastOutSlowIn),
+                                    ),
+                                  );
+                                  animationController?.forward();
+                                  return CategoryView(
+                                    callback: widget.callBack,
+                                    character: (state as Success)
+                                        .data[index],
+                                    animation: animation,
+                                    animationController: animationController,
+                                  );
+                                },
+                              ),
+                            ));
                       }
                     },
                   ),
@@ -153,7 +168,7 @@ class CategoryView extends StatelessWidget {
                                             fontWeight: FontWeight.w600,
                                             fontSize: 16,
                                             letterSpacing: 0.27,
-                                            color: HexColor('#6e6d6d'),
+                                            color: HexColor('#807e7e'),
                                           ),
                                         ),
                                       ),
@@ -167,12 +182,34 @@ class CategoryView extends StatelessWidget {
                                           mainAxisAlignment:
                                               MainAxisAlignment.center,
                                           crossAxisAlignment:
-                                              CrossAxisAlignment.start,
+                                              CrossAxisAlignment.center,
                                           children: <Widget>[
                                             Text(
-                                              character!.name,
+                                              character!.species,
                                               textAlign: TextAlign.center,
-                                              maxLines: 2,
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.w300,
+                                                overflow: TextOverflow.ellipsis,
+                                                fontSize: 12,
+                                                letterSpacing: 0.27,
+                                                color: HexColor('#807e7e'),
+                                              ),
+                                            ),
+                                            const SizedBox(width: 4),
+                                            Text(
+                                              ".",
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.w800,
+                                                fontSize: 12,
+                                                letterSpacing: 0.27,
+                                                color: HexColor('#807e7e'),
+                                              ),
+                                            ),
+                                            const SizedBox(width: 4),
+                                            Text(
+                                              character!.status,
+                                              textAlign: TextAlign.center,
                                               style: TextStyle(
                                                 fontWeight: FontWeight.w300,
                                                 overflow: TextOverflow.ellipsis,

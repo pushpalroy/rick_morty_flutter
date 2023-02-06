@@ -29,11 +29,13 @@ class CharacterListMapper
 class CharacterMapper extends EntityMapper<Character, DTCharacter> {
   @override
   DTCharacter mapToData(Character model) {
-    return DTCharacter(model.name, model.image);
+    return DTCharacter(
+        model.id, model.name, model.image, model.status, model.species);
   }
 
   @override
   Character mapToDomain(DTCharacter entity) {
-    return Character(entity.name, entity.image);
+    return Character(
+        entity.id, entity.name, entity.image, entity.status, entity.species);
   }
 }
