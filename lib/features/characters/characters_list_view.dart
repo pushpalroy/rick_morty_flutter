@@ -1,23 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rick_morty_flutter/models/ui_state.dart';
 import 'package:rick_morty_flutter/ui/model/characters/ui_character.dart';
 
-class CharactersListView extends StatefulWidget {
-  const CharactersListView({Key? key, this.callBack, required this.state})
-      : super(key: key);
+import '../../presentation/core/widgets/platform_progress_bar.dart';
+import 'characters_cubit.dart';
 
-  final UiState<UiCharacterList> state;
+class CharactersListView extends StatefulWidget {
+  const CharactersListView({Key? key, this.callBack}) : super(key: key);
+
   final Function()? callBack;
 
   @override
-  State<StatefulWidget> createState() => _CharactersListViewState(state: state);
+  State<StatefulWidget> createState() => _CharactersListViewState();
 }
 
 class _CharactersListViewState extends State<CharactersListView>
     with TickerProviderStateMixin {
-  _CharactersListViewState({required this.state}) : super();
-
-  final UiState<UiCharacterList> state;
   AnimationController? animationController;
 
   @override
@@ -34,50 +33,64 @@ class _CharactersListViewState extends State<CharactersListView>
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(top: 8),
-      child: FutureBuilder<bool>(
-        future: getData(),
-        builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
-          if (!snapshot.hasData) {
-            return const SizedBox();
-          } else {
-            return GridView(
-              padding: const EdgeInsets.all(8),
-              physics: const BouncingScrollPhysics(),
-              scrollDirection: Axis.vertical,
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                mainAxisSpacing: 32.0,
-                crossAxisSpacing: 32.0,
-                childAspectRatio: 0.8,
-              ),
-              children: List<Widget>.generate(
-                (state as Success).data.characters.length,
-                (int index) {
-                  final int count = (state as Success).data.characters.length;
-                  final Animation<double> animation =
-                      Tween<double>(begin: 0.0, end: 1.0).animate(
-                    CurvedAnimation(
-                      parent: animationController!,
-                      curve: Interval((1 / count) * index, 1.0,
-                          curve: Curves.fastOutSlowIn),
-                    ),
-                  );
-                  animationController?.forward();
-                  return CategoryView(
-                    callback: widget.callBack,
-                    character: (state as Success).data.characters[index],
-                    animation: animation,
-                    animationController: animationController,
-                  );
-                },
-              ),
-            );
-          }
-        },
-      ),
-    );
+    return BlocBuilder<CharactersCubit, UiState<UiCharacterList>>(
+        builder: (context, state) {
+      return state is Loading
+          ? const Align(
+              alignment: Alignment.center,
+              child: RmProgressBar(),
+            )
+          : state is Success
+              ? Padding(
+                  padding: const EdgeInsets.only(top: 8),
+                  child: FutureBuilder<bool>(
+                    future: getData(),
+                    builder:
+                        (BuildContext context, AsyncSnapshot<bool> snapshot) {
+                      if (!snapshot.hasData) {
+                        return const SizedBox();
+                      } else {
+                        return GridView(
+                          padding: const EdgeInsets.all(8),
+                          physics: const BouncingScrollPhysics(),
+                          scrollDirection: Axis.vertical,
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            mainAxisSpacing: 32.0,
+                            crossAxisSpacing: 32.0,
+                            childAspectRatio: 0.8,
+                          ),
+                          children: List<Widget>.generate(
+                            (state as Success).data.characters.length,
+                            (int index) {
+                              final int count =
+                                  (state as Success).data.characters.length;
+                              final Animation<double> animation =
+                                  Tween<double>(begin: 0.0, end: 1.0).animate(
+                                CurvedAnimation(
+                                  parent: animationController!,
+                                  curve: Interval((1 / count) * index, 1.0,
+                                      curve: Curves.fastOutSlowIn),
+                                ),
+                              );
+                              animationController?.forward();
+                              return CategoryView(
+                                callback: widget.callBack,
+                                character:
+                                    (state as Success).data.characters[index],
+                                animation: animation,
+                                animationController: animationController,
+                              );
+                            },
+                          ),
+                        );
+                      }
+                    },
+                  ),
+                )
+              : Container();
+    });
   }
 }
 
