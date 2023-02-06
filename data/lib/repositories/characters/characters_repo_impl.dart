@@ -1,4 +1,3 @@
-import 'package:data/sources/network/exceptions/api_exception.dart';
 import 'package:data/sources/network/rickmorty/rick_morty_services.dart';
 import 'package:domain/entities/api_response.dart';
 import 'package:injectable/injectable.dart';
@@ -16,18 +15,16 @@ class CharactersRepositoryImpl implements CharactersRepository {
 
   @override
   Future<ApiResponse<CharacterList>> getRickAndMortyCharacters() async {
-    final networkResponse = await services.getCharactersList();
-    if (networkResponse is Success) {
+    final response = await services.getCharactersList();
+    if (response is Success) {
       try {
-        final networkCharacterList =
-            (networkResponse as Success).data as DTCharactersList;
-        final characterList = mapper.mapToDomain(networkCharacterList);
-        return Success(data: characterList);
+        final characterList = (response as Success).data as DTCharactersList;
+        return Success(data: mapper.mapToDomain(characterList));
       } on Exception catch (e, _) {
         return Failure(error: e);
       }
     } else {
-      return Failure(error: APIException('Error', 0, ''));
+      return Failure(error: Exception((response as Failure).error));
     }
   }
 }

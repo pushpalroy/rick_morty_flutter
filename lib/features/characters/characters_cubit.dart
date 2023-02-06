@@ -7,7 +7,7 @@ import 'package:rick_morty_flutter/ui/model/characters/ui_character_mapper.dart'
 import 'package:domain/entities/api_response.dart' as api_response;
 
 class CharactersCubit extends Cubit<UiState<UiCharacterList>> {
-  final uiCharacterMapper = GetIt.I.get<UiCharacterMapper>();
+  final uiMapper = GetIt.I.get<UiCharacterMapper>();
   final getRickMortyCharactersUseCase =
       GetIt.I.get<GetRickMortyCharactersUseCase>();
 
@@ -15,24 +15,23 @@ class CharactersCubit extends Cubit<UiState<UiCharacterList>> {
     loadCharacters();
   }
 
+  /// Load Rick & Morty characters
   void loadCharacters() {
     emit(Loading());
     getRickMortyCharactersUseCase.perform(handleResponse, error, complete);
   }
 
+  /// Handle response data
   void handleResponse(CharacterListUseCaseResponse? response) {
-    final useCaseResponseCharacters = response?.characterList;
-    if (useCaseResponseCharacters == null) {
+    final responseData = response?.characterList;
+    if (responseData == null) {
       emit(Failure(exception: Exception("Couldn't fetch characters!")));
     } else {
-      if (useCaseResponseCharacters is api_response.Failure) {
-        emit(Failure(
-            exception:
-                (useCaseResponseCharacters as api_response.Failure).error));
-      } else if (useCaseResponseCharacters is api_response.Success) {
-        var characters = (useCaseResponseCharacters as api_response.Success);
-        final uiCharacters =
-            uiCharacterMapper.mapToPresentation(characters.data);
+      if (responseData is api_response.Failure) {
+        emit(Failure(exception: (responseData as api_response.Failure).error));
+      } else if (responseData is api_response.Success) {
+        var characters = (responseData as api_response.Success);
+        final uiCharacters = uiMapper.mapToPresentation(characters.data);
         emit(Success(data: uiCharacters));
       }
     }

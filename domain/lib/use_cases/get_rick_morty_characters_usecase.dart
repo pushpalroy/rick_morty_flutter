@@ -7,17 +7,17 @@ import 'package:domain/repositories/characters/characters_repo.dart';
 
 class GetRickMortyCharactersUseCase
     extends UseCase<CharacterListUseCaseResponse, void> {
-  final CharactersRepository charactersRepository;
+  final CharactersRepository repo;
 
-  GetRickMortyCharactersUseCase(this.charactersRepository);
+  GetRickMortyCharactersUseCase(this.repo);
 
   @override
   Future<Stream<CharacterListUseCaseResponse>> buildUseCaseStream(
       void params) async {
     final controller = StreamController<CharacterListUseCaseResponse>();
     try {
-      final characterList =
-          await charactersRepository.getRickAndMortyCharacters();
+      // Fetch from repository
+      final characterList = await repo.getRickAndMortyCharacters();
       // Adding it triggers the .onNext() in the `Observer`
       controller.add(CharacterListUseCaseResponse(characterList));
       logger.finest('GetRickMortyCharactersUseCase successful.');
