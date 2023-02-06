@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rick_morty_flutter/features/characters/characters_cubit.dart';
 import 'package:rick_morty_flutter/models/ui_state.dart';
-import 'package:rick_morty_flutter/presentation/core/extensions/widget_extensions.dart';
 import 'package:rick_morty_flutter/ui/model/characters/ui_character.dart';
 import '../../presentation/core/widgets/platform_progress_bar.dart';
+import 'characters_list_view.dart';
 
 class CharactersPage extends StatelessWidget {
   const CharactersPage({Key? key}) : super(key: key);
@@ -37,18 +37,10 @@ class CharacterListPage extends StatelessWidget {
                   child: RmProgressBar(),
                 )
               : state is Success
-                  ? buildCharactersList(state as Success)
+                  ? CharactersListView(state: state)
                   : Container()
         ],
       );
     });
-  }
-
-  ListView buildCharactersList(Success state) {
-    return ListView.builder(
-        itemCount: state.data.characters.length,
-        itemBuilder: (context, index) {
-          return Text(state.data.characters[index].name).paddingAll(8);
-        });
   }
 }

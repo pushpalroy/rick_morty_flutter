@@ -11,7 +11,6 @@ class RickMortyServices {
   RickMortyServices(this.service);
 
   Future<ApiResponse<DTCharactersList>> getCharactersList() async {
-    await Future.delayed(const Duration(seconds: 3));
     const query = '''
     query {
         characters(page: 1, filter: { name: "" }) {
@@ -20,14 +19,12 @@ class RickMortyServices {
           }
           results {
             name
+            status
             image
+            species
+            type
+            gender
           }
-        }
-        location(id: 1) {
-          id
-        }
-        episodesByIds(ids: [1, 2]) {
-          id
         }
       }
   ''';
