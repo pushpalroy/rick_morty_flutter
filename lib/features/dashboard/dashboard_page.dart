@@ -55,5 +55,5 @@ class TabBarPage extends StatelessWidget {
             })));
   }
 
-  Text text() => const Text("Dashboard");
+  Text text() => const Text("Rick & Morty");
 }

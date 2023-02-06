@@ -28,7 +28,7 @@ class RmScaffold
   @override
   Scaffold buildMaterial(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).backgroundColor,
+      backgroundColor: Theme.of(context).colorScheme.background,
       appBar: androidAppBar,
       body: SizedBox(
         width: MediaQuery.of(context).size.width,

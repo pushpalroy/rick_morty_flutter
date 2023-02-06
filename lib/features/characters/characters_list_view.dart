@@ -22,7 +22,7 @@ class _CharactersListViewState extends State<CharactersListView>
   @override
   void initState() {
     animationController = AnimationController(
-        duration: const Duration(milliseconds: 2000), vsync: this);
+        duration: const Duration(milliseconds: 1200), vsync: this);
     super.initState();
   }
 
@@ -57,8 +57,8 @@ class _CharactersListViewState extends State<CharactersListView>
                           gridDelegate:
                               const SliverGridDelegateWithFixedCrossAxisCount(
                             crossAxisCount: 2,
-                            mainAxisSpacing: 32.0,
-                            crossAxisSpacing: 32.0,
+                            mainAxisSpacing: 24.0,
+                            crossAxisSpacing: 16.0,
                             childAspectRatio: 0.8,
                           ),
                           children: List<Widget>.generate(
@@ -131,7 +131,7 @@ class CategoryView extends StatelessWidget {
                         Expanded(
                           child: Container(
                             decoration: BoxDecoration(
-                              color: HexColor('#F8FAFB'),
+                              color: HexColor('#edeff0'),
                               borderRadius:
                                   const BorderRadius.all(Radius.circular(16.0)),
                               // border: new Border.all(
@@ -149,35 +149,36 @@ class CategoryView extends StatelessWidget {
                                           character!.name,
                                           textAlign: TextAlign.center,
                                           overflow: TextOverflow.ellipsis,
-                                          style: const TextStyle(
+                                          style: TextStyle(
                                             fontWeight: FontWeight.w600,
                                             fontSize: 16,
                                             letterSpacing: 0.27,
-                                            color: Colors.grey,
+                                            color: HexColor('#6e6d6d'),
                                           ),
                                         ),
                                       ),
                                       Padding(
                                         padding: const EdgeInsets.only(
                                             top: 8,
-                                            left: 16,
-                                            right: 16,
+                                            left: 8,
+                                            right: 8,
                                             bottom: 8),
                                         child: Row(
                                           mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
+                                              MainAxisAlignment.center,
                                           crossAxisAlignment:
-                                              CrossAxisAlignment.center,
+                                              CrossAxisAlignment.start,
                                           children: <Widget>[
                                             Text(
                                               character!.name,
                                               textAlign: TextAlign.center,
-                                              style: const TextStyle(
+                                              maxLines: 2,
+                                              style: TextStyle(
                                                 fontWeight: FontWeight.w300,
                                                 overflow: TextOverflow.ellipsis,
                                                 fontSize: 12,
                                                 letterSpacing: 0.27,
-                                                color: Colors.grey,
+                                                color: HexColor('#6e6d6d'),
                                               ),
                                             )
                                           ],
@@ -194,7 +195,7 @@ class CategoryView extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(
-                          height: 48,
+                          height: 32,
                         ),
                       ],
                     ),
@@ -207,7 +208,7 @@ class CategoryView extends StatelessWidget {
                               const BorderRadius.all(Radius.circular(16.0)),
                           boxShadow: <BoxShadow>[
                             BoxShadow(
-                                color: Colors.grey.withOpacity(0.8),
+                                color: Colors.grey.withOpacity(0.9),
                                 offset: const Offset(0.0, 0.0),
                                 blurRadius: 8.0),
                           ],
