@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:rick_morty_flutter/features/characters/character_info_page.dart';
 import 'package:rick_morty_flutter/models/ui_state.dart';
 import 'package:rick_morty_flutter/ui/model/characters/ui_character.dart';
 
@@ -91,7 +92,7 @@ class _CharactersListViewState extends State<CharactersListView>
                                   );
                                   animationController?.forward();
                                   return CategoryView(
-                                    callback: widget.callBack,
+                                    callback: moveTo,
                                     character: (state as Success)
                                         .data[index],
                                     animation: animation,
@@ -106,6 +107,15 @@ class _CharactersListViewState extends State<CharactersListView>
                 )
               : Container();
     });
+  }
+
+  void moveTo() {
+    Navigator.push<dynamic>(
+      context,
+      MaterialPageRoute<dynamic>(
+        builder: (BuildContext context) => const CharacterInfoPage(),
+      ),
+    );
   }
 }
 

@@ -1,23 +1,23 @@
 import 'package:go_router/go_router.dart';
+import 'package:rick_morty_flutter/features/characters/character_info_page.dart';
 import 'package:rick_morty_flutter/features/dashboard/dashboard_page.dart';
 import 'package:rick_morty_flutter/features/home/home_page.dart';
 import 'package:rick_morty_flutter/features/joke_list/joke_list_page.dart';
 import 'package:rick_morty_flutter/features/login/login_page.dart';
-import 'package:rick_morty_flutter/features/splash/splash_page.dart';
 
 const loginRoute = '/login';
 const jokeListRoute = "/jokesList";
-const dashboardRoutePath = "/dashboard";
 const homeRoute = '/home';
 const rootRoute = '/';
+const characterRoute = "/character";
 
 final routes = GoRouter(
   routes: [
-    // splashRoute(),
     loginPageRoute(),
     homePageRoute(),
     jokeListRoutePage(),
-    dashboardRoute()
+    dashboardRoute(),
+    characterInfoRoute()
   ],
 );
 
@@ -42,16 +42,16 @@ GoRoute loginPageRoute() {
   );
 }
 
-// GoRoute splashRoute() {
-//   return GoRoute(
-//     path: rootRoute,
-//     builder: (context, state) => const SplashPage(),
-//   );
-// }
-
 GoRoute dashboardRoute() {
   return GoRoute(
     path: rootRoute,
     builder: (context, state) => const DashboardPage(),
+  );
+}
+
+GoRoute characterInfoRoute() {
+  return GoRoute(
+    path: characterRoute,
+    builder: (context, state) => const CharacterInfoPage(),
   );
 }
