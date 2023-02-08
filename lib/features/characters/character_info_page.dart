@@ -6,12 +6,14 @@ import '../../ui/model/characters/ui_character_info.dart';
 import 'character_info_cubit.dart';
 
 class CharacterInfoPage extends StatelessWidget {
-  const CharacterInfoPage({Key? key}) : super(key: key);
+  const CharacterInfoPage({Key? key, required this.characterId}) : super(key: key);
+
+  final String characterId;
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => CharacterInfoCubit(),
+      create: (_) => CharacterInfoCubit(characterId),
       child: BlocListener<CharacterInfoCubit, UiState<UiCharacterInfo>>(
         child: const CharacterInfoWidget(),
         listener: (context, state) {},

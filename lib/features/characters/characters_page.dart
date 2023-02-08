@@ -106,9 +106,10 @@ class _CharactersListWidgetState extends State<CharactersListWidget>
                                     ),
                                   );
                                   animationController?.forward();
-                                  return CategoryView(
-                                    callback: () {
-                                      moveTo(context);
+                                  return CharacterItemWidget(
+                                    callback: (characterId) {
+                                      // Navigate to character information screen
+                                      context.push(characterRoute, extra: characterId);
                                     },
                                     character: (state as Success).data[index],
                                     animation: animation,
@@ -124,22 +125,18 @@ class _CharactersListWidgetState extends State<CharactersListWidget>
               : Container();
     });
   }
-
-  void moveTo(BuildContext context) {
-    context.push(characterRoute);
-  }
 }
 
-class CategoryView extends StatelessWidget {
-  const CategoryView(
+class CharacterItemWidget extends StatelessWidget {
+  const CharacterItemWidget(
       {Key? key,
       this.character,
       this.animationController,
       this.animation,
-      this.callback})
+      required this.callback})
       : super(key: key);
 
-  final VoidCallback? callback;
+  final Function(String) callback;
   final UiCharacter? character;
   final AnimationController? animationController;
   final Animation<double>? animation;
@@ -156,7 +153,9 @@ class CategoryView extends StatelessWidget {
                 0.0, 50 * (1.0 - animation!.value), 0.0),
             child: InkWell(
               splashColor: Colors.transparent,
-              onTap: callback,
+              onTap: () {
+                callback(character!.id);
+              },
               child: SizedBox(
                 height: 290,
                 child: Stack(

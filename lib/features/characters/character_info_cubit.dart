@@ -10,8 +10,8 @@ class CharacterInfoCubit extends Cubit<UiState<UiCharacterInfo>> {
   final uiMapper = GetIt.I.get<UiCharacterInfoMapper>();
   final getCharacterInfoUseCase = GetIt.I.get<GetCharacterInfoUseCase>();
 
-  CharacterInfoCubit() : super(Initial()) {
-    loadCharacterInfo(id: 1);
+  CharacterInfoCubit(String characterId) : super(Initial()) {
+    loadCharacterInfo(id: int.parse(characterId));
   }
 
   /// Load character information

@@ -52,6 +52,11 @@ GoRoute dashboardRoute() {
 GoRoute characterInfoRoute() {
   return GoRoute(
     path: characterRoute,
-    builder: (context, state) => const CharacterInfoPage(),
+    builder: (context, state) {
+      String characterId = state.extra as String;
+      return CharacterInfoPage(
+        characterId: characterId
+      );
+    },
   );
 }
