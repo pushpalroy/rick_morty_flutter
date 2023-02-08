@@ -22,6 +22,6 @@ class UiCharacterInfoMapper
   @override
   UiCharacterInfo mapToPresentation(CharacterInfo model) {
     return UiCharacterInfo(model.id, model.name, model.image, model.status,
-        model.species, model.gender, model.origin.name, model.location.name);
+        model.species, model.gender, model.origin?.name, model.location?.name);
   }
 }

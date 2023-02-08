@@ -14,8 +14,8 @@ class CharacterInfoMapper extends EntityMapper<CharacterInfo, DTCharacterInfo> {
         model.status,
         model.species,
         model.gender,
-        DTOrigin(model.origin.id, model.origin.name),
-        DTLocation(model.location.id, model.location.name));
+        DTOrigin(model.origin?.id, model.origin?.name),
+        DTLocation(model.location?.id, model.location?.name));
   }
 
   @override
@@ -27,7 +27,7 @@ class CharacterInfoMapper extends EntityMapper<CharacterInfo, DTCharacterInfo> {
         entity.status,
         entity.species,
         entity.gender,
-        Origin(entity.origin.id, entity.origin.name),
-        Location(entity.location.id, entity.location.name));
+        Origin(entity.origin?.id, entity.origin?.name),
+        Location(entity.location?.id, entity.location?.name));
   }
 }

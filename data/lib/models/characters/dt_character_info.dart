@@ -10,14 +10,9 @@ class CharacterFields {
 }
 
 class DTCharacterInfo {
-  final String id;
-  final String name;
-  final String image;
-  final String status;
-  final String species;
-  final String gender;
-  final DTOrigin origin;
-  final DTLocation location;
+  final String? id, name, image, status, species, gender;
+  final DTOrigin? origin;
+  final DTLocation? location;
 
   DTCharacterInfo(this.id, this.name, this.image, this.status, this.species,
       this.gender, this.origin, this.location);
@@ -62,8 +57,7 @@ class DTCharacterInfo {
 }
 
 class DTOrigin {
-  final String id;
-  final String name;
+  final String? id, name;
 
   DTOrigin(this.id, this.name);
 
@@ -81,8 +75,7 @@ class DTOrigin {
 }
 
 class DTLocation {
-  final String id;
-  final String name;
+  final String? id, name;
 
   DTLocation(this.id, this.name);
 
