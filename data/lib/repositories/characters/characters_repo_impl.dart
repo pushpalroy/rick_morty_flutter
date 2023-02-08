@@ -5,8 +5,8 @@ import 'package:domain/entities/characters/dm_character_info.dart';
 import 'package:injectable/injectable.dart';
 import 'package:domain/repositories/characters/characters_repo.dart';
 import 'package:domain/entities/characters/dm_character.dart';
-import '../../mapper/jokes/character_info_mapper.dart';
-import '../../mapper/jokes/characters_mappers.dart';
+import '../../mapper/characters/character_info_mapper.dart';
+import '../../mapper/characters/characters_mappers.dart';
 import '../../models/characters/dt_character_list.dart';
 
 @Injectable(as: CharactersRepository)
