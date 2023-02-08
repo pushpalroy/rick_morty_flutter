@@ -10,7 +10,7 @@ class RickMortyApp extends AbstractPlatformWidget<CupertinoApp, MaterialApp> {
   /// Platform dependent app widget (CupertinoApp for iOS, MaterialApp for android)
   final String title;
 
-  const RickMortyApp({Key? key, this.title = 'Praxis'}) : super(key: key);
+  const RickMortyApp({Key? key, this.title = 'Rick & Morty'}) : super(key: key);
 
   @override
   CupertinoApp buildCupertino(BuildContext context) {
