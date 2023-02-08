@@ -31,7 +31,7 @@ class GetCharacterInfoUseCase
         controller.addError(InvalidRequestException());
       }
     } catch (e) {
-      logger.severe('GetCharacterInfoUseCase failure.');
+      logger.severe('GetCharacterInfoUseCase failure: $e');
       controller.addError(e);
     }
     return controller.stream;

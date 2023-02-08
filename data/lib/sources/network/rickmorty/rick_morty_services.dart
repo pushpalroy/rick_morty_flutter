@@ -40,39 +40,37 @@ class RickMortyServices {
   }
 
   Future<ApiResponse<DTCharacterInfo>> getCharacterInfo(int id) async {
-    final query = '''
-      query {
-        {
-          character(id: $id) {
-            id
-            name
-            status
-            species
-            type
-            gender
-            origin {
-              id
-              name
-            }
-            location {
-              id
-              name
-            }
-            episode {
-              id
-              name
-            }
-            image
-            created
-          }
+    final query = '''{
+      character(id: $id) {
+        id
+        name
+        image
+        status
+        species
+        gender
+        origin {
+          id
+          name
+        }
+        location {
+          id
+          name
+        }
       }
-      ''';
+    }''';
 
     final response = await service.performQuery(query, variables: {});
     log("$response");
 
     if (response is Success) {
-      return Success(data: DTCharacterInfo.fromJson(response.data));
+      DTCharacterInfo? a;
+      try {
+        a = DTCharacterInfo.fromJson(response.data['character']);
+      } catch (e) {
+        log("error", error: e);
+        return Failure(error: Exception(e));
+      }
+      return Success(data: a);
     } else {
       return Failure(error: (response as Failure).error);
     }

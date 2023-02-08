@@ -1,13 +1,33 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../models/ui_state.dart';
+import '../../presentation/core/widgets/platform_progress_bar.dart';
+import '../../ui/model/characters/ui_character_info.dart';
+import 'character_info_cubit.dart';
 
-class CharacterInfoPage extends StatefulWidget {
+class CharacterInfoPage extends StatelessWidget {
   const CharacterInfoPage({Key? key}) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() => _CharacterInfoPage();
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (_) => CharacterInfoCubit(),
+      child: BlocListener<CharacterInfoCubit, UiState<UiCharacterInfo>>(
+        child: const CharacterInfoWidget(),
+        listener: (context, state) {},
+      ),
+    );
+  }
 }
 
-class _CharacterInfoPage extends State<CharacterInfoPage>
+class CharacterInfoWidget extends StatefulWidget {
+  const CharacterInfoWidget({Key? key}) : super(key: key);
+
+  @override
+  State<StatefulWidget> createState() => _CharacterInfoWidget();
+}
+
+class _CharacterInfoWidget extends State<CharacterInfoWidget>
     with TickerProviderStateMixin {
   final double infoHeight = 364.0;
   AnimationController? animationController;
@@ -48,201 +68,231 @@ class _CharacterInfoPage extends State<CharacterInfoPage>
     final double tempHeight = MediaQuery.of(context).size.height -
         (MediaQuery.of(context).size.width / 1.2) +
         24.0;
-    return Container(
-      color: Colors.white,
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        body: Stack(
-          children: <Widget>[
-            Column(
-              children: <Widget>[
-                AspectRatio(
-                  aspectRatio: 1.2,
-                  child: Image.asset('assets/design_course/webInterFace.png'),
-                ),
-              ],
-            ),
-            Positioned(
-              top: (MediaQuery.of(context).size.width / 1.2) - 24.0,
-              bottom: 0,
-              left: 0,
-              right: 0,
-              child: Container(
-                decoration: BoxDecoration(
+    return BlocBuilder<CharacterInfoCubit, UiState<UiCharacterInfo>>(
+        builder: (context, state) {
+      return state is Loading
+          ? const Align(
+              alignment: Alignment.center,
+              child: RmProgressBar(),
+            )
+          : state is Success
+              ? Container(
                   color: Colors.white,
-                  borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(32.0),
-                      topRight: Radius.circular(32.0)),
-                  boxShadow: <BoxShadow>[
-                    BoxShadow(
-                        color: Colors.grey.withOpacity(0.2),
-                        offset: const Offset(1.1, 1.1),
-                        blurRadius: 10.0),
-                  ],
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 8, right: 8),
-                  child: SingleChildScrollView(
-                    child: Container(
-                      constraints: BoxConstraints(
-                          minHeight: infoHeight,
-                          maxHeight: tempHeight > infoHeight
-                              ? tempHeight
-                              : infoHeight),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          const Padding(
-                            padding:
-                                EdgeInsets.only(top: 32.0, left: 18, right: 16),
-                            child: Text(
-                              'Web Design\nCourse',
-                              textAlign: TextAlign.left,
-                              style: TextStyle(
-                                fontWeight: FontWeight.w600,
-                                fontSize: 22,
-                                letterSpacing: 0.27,
-                                color: Colors.grey,
-                              ),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(
-                                left: 16, right: 16, bottom: 8, top: 16),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: <Widget>[
-                                const Text(
-                                  '\$28.99',
-                                  textAlign: TextAlign.left,
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.w200,
-                                    fontSize: 22,
-                                    letterSpacing: 0.27,
-                                    color: Colors.blue,
-                                  ),
-                                ),
-                                Row(
-                                  children: const <Widget>[
-                                    Text(
-                                      '4.3',
-                                      textAlign: TextAlign.left,
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.w200,
-                                        fontSize: 22,
-                                        letterSpacing: 0.27,
-                                        color: Colors.grey,
-                                      ),
-                                    ),
-                                    Icon(
-                                      Icons.star,
-                                      color: Colors.blue,
-                                      size: 24,
-                                    ),
-                                  ],
-                                )
+                  child: Scaffold(
+                    backgroundColor: Colors.transparent,
+                    body: Stack(
+                      children: <Widget>[
+                        Column(
+                          children: <Widget>[
+                            AspectRatio(
+                                aspectRatio: 1,
+                                child: Image.network(
+                                    (state as Success).data.image,
+                                    fit: BoxFit.fill)),
+                          ],
+                        ),
+                        Positioned(
+                          top: (MediaQuery.of(context).size.width / 1.1),
+                          bottom: 0,
+                          left: 0,
+                          right: 0,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: const BorderRadius.only(
+                                  topLeft: Radius.circular(32.0),
+                                  topRight: Radius.circular(32.0)),
+                              boxShadow: <BoxShadow>[
+                                BoxShadow(
+                                    color: Colors.grey.withOpacity(0.2),
+                                    offset: const Offset(1.1, 1.1),
+                                    blurRadius: 10.0),
                               ],
                             ),
-                          ),
-                          AnimatedOpacity(
-                            duration: const Duration(milliseconds: 500),
-                            opacity: opacity1,
                             child: Padding(
-                              padding: const EdgeInsets.all(8),
-                              child: Row(
-                                children: <Widget>[
-                                  getTimeBoxUI('24', 'Classe'),
-                                  getTimeBoxUI('2hours', 'Time'),
-                                  getTimeBoxUI('24', 'Seat'),
-                                ],
-                              ),
-                            ),
-                          ),
-                          Expanded(
-                            child: AnimatedOpacity(
-                              duration: const Duration(milliseconds: 500),
-                              opacity: opacity2,
-                              child: const Padding(
-                                padding: EdgeInsets.only(
-                                    left: 16, right: 16, top: 8, bottom: 8),
-                                child: Text(
-                                  'Lorem ipsum is simply dummy text of printing & typesetting industry, Lorem ipsum is simply dummy text of printing & typesetting industry.',
-                                  textAlign: TextAlign.justify,
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.w200,
-                                    fontSize: 14,
-                                    letterSpacing: 0.27,
-                                    color: Colors.grey,
+                              padding: const EdgeInsets.only(left: 8, right: 8),
+                              child: SingleChildScrollView(
+                                child: Container(
+                                  constraints: BoxConstraints(
+                                      minHeight: infoHeight,
+                                      maxHeight: tempHeight > infoHeight
+                                          ? tempHeight
+                                          : infoHeight),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: <Widget>[
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                            top: 32.0, left: 18, right: 16),
+                                        child: Text(
+                                          (state as Success).data.name,
+                                          textAlign: TextAlign.left,
+                                          style: const TextStyle(
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 22,
+                                            letterSpacing: 0.27,
+                                            color: Colors.grey,
+                                          ),
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                            left: 16,
+                                            right: 16,
+                                            bottom: 8,
+                                            top: 16),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          children: <Widget>[
+                                            Text(
+                                              (state as Success).data.species,
+                                              textAlign: TextAlign.left,
+                                              style: const TextStyle(
+                                                fontWeight: FontWeight.w200,
+                                                fontSize: 22,
+                                                letterSpacing: 0.27,
+                                                color: Colors.blue,
+                                              ),
+                                            ),
+                                            Row(
+                                              children: <Widget>[
+                                                Text(
+                                                  (state as Success)
+                                                      .data
+                                                      .status,
+                                                  textAlign: TextAlign.left,
+                                                  style: const TextStyle(
+                                                    fontWeight: FontWeight.w200,
+                                                    fontSize: 22,
+                                                    letterSpacing: 0.27,
+                                                    color: Colors.grey,
+                                                  ),
+                                                ),
+                                                const Icon(
+                                                  Icons.star,
+                                                  color: Colors.blue,
+                                                  size: 24,
+                                                ),
+                                              ],
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                      AnimatedOpacity(
+                                        duration:
+                                            const Duration(milliseconds: 500),
+                                        opacity: opacity1,
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(8),
+                                          child: Row(
+                                            children: <Widget>[
+                                              getTimeBoxUI('24', 'Classe'),
+                                              getTimeBoxUI('2hours', 'Time'),
+                                              getTimeBoxUI('24', 'Seat'),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                      Expanded(
+                                        child: AnimatedOpacity(
+                                          duration:
+                                              const Duration(milliseconds: 500),
+                                          opacity: opacity2,
+                                          child: const Padding(
+                                            padding: EdgeInsets.only(
+                                                left: 16,
+                                                right: 16,
+                                                top: 8,
+                                                bottom: 8),
+                                            child: Text(
+                                              'Lorem ipsum is simply dummy text of printing & typesetting industry, Lorem ipsum is simply dummy text of printing & typesetting industry.',
+                                              textAlign: TextAlign.justify,
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.w200,
+                                                fontSize: 14,
+                                                letterSpacing: 0.27,
+                                                color: Colors.grey,
+                                              ),
+                                              maxLines: 3,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        height: MediaQuery.of(context)
+                                            .padding
+                                            .bottom,
+                                      )
+                                    ],
                                   ),
-                                  maxLines: 3,
-                                  overflow: TextOverflow.ellipsis,
                                 ),
                               ),
                             ),
                           ),
-                          SizedBox(
-                            height: MediaQuery.of(context).padding.bottom,
-                          )
-                        ],
-                      ),
+                        ),
+                        Positioned(
+                          top: (MediaQuery.of(context).size.width / 1.2) -
+                              24.0 -
+                              35,
+                          right: 35,
+                          child: ScaleTransition(
+                            alignment: Alignment.center,
+                            scale: CurvedAnimation(
+                                parent: animationController!,
+                                curve: Curves.fastOutSlowIn),
+                            child: Card(
+                              color: Colors.blue,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(50.0)),
+                              elevation: 10.0,
+                              child: const SizedBox(
+                                width: 60,
+                                height: 60,
+                                child: Center(
+                                  child: Icon(
+                                    Icons.favorite,
+                                    color: Colors.white,
+                                    size: 30,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(
+                              top: MediaQuery.of(context).padding.top),
+                          child: SizedBox(
+                            width: AppBar().preferredSize.height,
+                            height: AppBar().preferredSize.height,
+                            child: Material(
+                              color: Colors.transparent,
+                              child: InkWell(
+                                borderRadius: BorderRadius.circular(
+                                    AppBar().preferredSize.height),
+                                child: const Icon(
+                                  Icons.arrow_back_ios,
+                                  color: Colors.black,
+                                ),
+                                onTap: () {
+                                  Navigator.pop(context);
+                                },
+                              ),
+                            ),
+                          ),
+                        )
+                      ],
                     ),
                   ),
-                ),
-              ),
-            ),
-            Positioned(
-              top: (MediaQuery.of(context).size.width / 1.2) - 24.0 - 35,
-              right: 35,
-              child: ScaleTransition(
-                alignment: Alignment.center,
-                scale: CurvedAnimation(
-                    parent: animationController!, curve: Curves.fastOutSlowIn),
-                child: Card(
-                  color: Colors.blue,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(50.0)),
-                  elevation: 10.0,
-                  child: const SizedBox(
-                    width: 60,
-                    height: 60,
-                    child: Center(
-                      child: Icon(
-                        Icons.favorite,
-                        color: Colors.white,
-                        size: 30,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
-              child: SizedBox(
-                width: AppBar().preferredSize.height,
-                height: AppBar().preferredSize.height,
-                child: Material(
-                  color: Colors.transparent,
-                  child: InkWell(
-                    borderRadius:
-                        BorderRadius.circular(AppBar().preferredSize.height),
-                    child: const Icon(
-                      Icons.arrow_back_ios,
-                      color: Colors.black,
-                    ),
-                    onTap: () {
-                      Navigator.pop(context);
-                    },
-                  ),
-                ),
-              ),
-            )
-          ],
-        ),
-      ),
-    );
+                )
+              : Container();
+    });
   }
 
   Widget getTimeBoxUI(String text1, String txt2) {

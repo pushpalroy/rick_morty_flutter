@@ -9,7 +9,7 @@ const loginRoute = '/login';
 const jokeListRoute = "/jokesList";
 const homeRoute = '/home';
 const rootRoute = '/';
-const characterRoute = "/character";
+const characterRoute = "/characterInfo";
 
 final routes = GoRouter(
   routes: [
