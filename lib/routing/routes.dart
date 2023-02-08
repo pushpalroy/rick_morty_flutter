@@ -1,5 +1,5 @@
 import 'package:go_router/go_router.dart';
-import 'package:rick_morty_flutter/features/characters/character_info_page.dart';
+import 'package:rick_morty_flutter/features/characters/info/character_info_page.dart';
 import 'package:rick_morty_flutter/features/dashboard/dashboard_page.dart';
 
 const rootRoute = '/';

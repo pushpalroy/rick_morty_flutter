@@ -24,8 +24,8 @@ class DTCharacterInfo {
         status = map['status'],
         species = map['species'],
         gender = map['gender'],
-        origin = DTOrigin(map['origin']['id'], map['origin']['id']),
-        location = DTLocation(map['origin']['id'], map['origin']['id']);
+        origin = DTOrigin(map['origin']['id'], map['origin']['name']),
+        location = DTLocation(map['origin']['id'], map['origin']['name']);
 
   Map<String, Object?> toJson() => {
         CharacterFields.id: id,
