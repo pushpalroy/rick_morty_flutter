@@ -58,72 +58,158 @@ class _CharactersListWidgetState extends State<CharactersListWidget>
               child: RmProgressBar(),
             )
           : state is Success
-              ? Padding(
-                  padding: const EdgeInsets.only(top: 8),
-                  child: FutureBuilder<bool>(
-                    future: getData(),
-                    builder:
-                        (BuildContext context, AsyncSnapshot<bool> snapshot) {
-                      if (!snapshot.hasData) {
-                        return const SizedBox();
-                      } else {
-                        return NotificationListener<ScrollNotification>(
-                            onNotification: (scrollNotification) {
-                              if (scrollNotification.metrics.pixels ==
-                                  scrollNotification.metrics.maxScrollExtent) {
-                                setState(() {
-                                  page++;
-                                  context
-                                      .read<CharactersCubit>()
-                                      .loadCharacters(page: page);
-                                });
-                              }
-                              return false;
-                            },
-                            child: GridView(
-                              padding: const EdgeInsets.all(8),
-                              physics: const BouncingScrollPhysics(),
-                              scrollDirection: Axis.vertical,
-                              gridDelegate:
-                                  const SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 2,
-                                mainAxisSpacing: 24.0,
-                                crossAxisSpacing: 16.0,
-                                childAspectRatio: 0.8,
-                              ),
-                              children: List<Widget>.generate(
-                                (state as Success).data.length,
-                                (int index) {
-                                  final int count =
-                                      (state as Success).data.length;
-                                  final Animation<double> animation =
-                                      Tween<double>(begin: 0.0, end: 1.0)
-                                          .animate(
-                                    CurvedAnimation(
-                                      parent: animationController!,
-                                      curve: Interval((1 / count) * index, 1.0,
-                                          curve: Curves.fastOutSlowIn),
-                                    ),
-                                  );
-                                  animationController?.forward();
-                                  return CharacterItemWidget(
-                                    callback: (characterId) {
-                                      // Navigate to character information screen
-                                      context.push(characterRoute, extra: characterId);
-                                    },
-                                    character: (state as Success).data[index],
-                                    animation: animation,
-                                    animationController: animationController,
-                                  );
+              ? Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                      getSearchBarUI(),
+                      Flexible(
+                          child: Padding(
+                        padding: const EdgeInsets.only(top: 8),
+                        child: FutureBuilder<bool>(
+                          future: getData(),
+                          builder: (BuildContext context,
+                              AsyncSnapshot<bool> snapshot) {
+                            if (!snapshot.hasData) {
+                              return const SizedBox();
+                            } else {
+                              return NotificationListener<ScrollNotification>(
+                                onNotification: (scrollNotification) {
+                                  if (scrollNotification.metrics.pixels ==
+                                      scrollNotification
+                                          .metrics.maxScrollExtent) {
+                                    setState(() {
+                                      page++;
+                                      context
+                                          .read<CharactersCubit>()
+                                          .loadCharacters(page: page);
+                                    });
+                                  }
+                                  return false;
                                 },
-                              ),
-                            ));
-                      }
-                    },
-                  ),
-                )
+                                child: GridView(
+                                  shrinkWrap: true,
+                                  scrollDirection: Axis.vertical,
+                                  padding: const EdgeInsets.all(8),
+                                  physics: const BouncingScrollPhysics(),
+                                  gridDelegate:
+                                      const SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: 2,
+                                    mainAxisSpacing: 24.0,
+                                    crossAxisSpacing: 16.0,
+                                    childAspectRatio: 0.8,
+                                  ),
+                                  children: List<Widget>.generate(
+                                    (state as Success).data.length,
+                                    (int index) {
+                                      final int count =
+                                          (state as Success).data.length;
+                                      final Animation<double> animation =
+                                          Tween<double>(begin: 0.0, end: 1.0)
+                                              .animate(
+                                        CurvedAnimation(
+                                          parent: animationController!,
+                                          curve: Interval(
+                                              (1 / count) * index, 1.0,
+                                              curve: Curves.fastOutSlowIn),
+                                        ),
+                                      );
+                                      animationController?.forward();
+                                      return CharacterItemWidget(
+                                        callback: (characterId) {
+                                          // Navigate to character information screen
+                                          context.push(characterRoute,
+                                              extra: characterId);
+                                        },
+                                        character:
+                                            (state as Success).data[index],
+                                        animation: animation,
+                                        animationController:
+                                            animationController,
+                                      );
+                                    },
+                                  ),
+                                ),
+                              );
+                            }
+                          },
+                        ),
+                      ))
+                    ])
               : Container();
     });
+  }
+
+  Widget getSearchBarUI() {
+    return Padding(
+      padding: const EdgeInsets.only(top: 8, right: 8, left: 8),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          SizedBox(
+            width: MediaQuery.of(context).size.width * 0.95,
+            height: 64,
+            child: Padding(
+              padding: const EdgeInsets.only(top: 8, bottom: 4),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: HexColor('#F8FAFB'),
+                  borderRadius: const BorderRadius.only(
+                    bottomRight: Radius.circular(13.0),
+                    bottomLeft: Radius.circular(13.0),
+                    topLeft: Radius.circular(13.0),
+                    topRight: Radius.circular(13.0),
+                  ),
+                ),
+                child: Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: Container(
+                        padding: const EdgeInsets.only(left: 0, right: 0),
+                        child: TextFormField(
+                          style: const TextStyle(
+                            fontFamily: 'WorkSans',
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            color: Colors.blue,
+                          ),
+                          keyboardType: TextInputType.text,
+                          decoration: InputDecoration(
+                            labelText: 'Search for characters',
+                            border: InputBorder.none,
+                            helperStyle: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                              color: HexColor('#B9BABC'),
+                            ),
+                            labelStyle: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 16,
+                              letterSpacing: 0.2,
+                              color: HexColor('#B9BABC'),
+                            ),
+                          ),
+                          onEditingComplete: () {},
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      width: 60,
+                      height: 60,
+                      child: Icon(Icons.search, color: HexColor('#B9BABC')),
+                    )
+                  ],
+                ),
+              ),
+            ),
+          ),
+          const Expanded(
+            child: SizedBox(),
+          )
+        ],
+      ),
+    );
   }
 }
 
