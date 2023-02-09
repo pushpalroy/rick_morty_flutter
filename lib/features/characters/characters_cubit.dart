@@ -10,19 +10,26 @@ class CharactersCubit extends Cubit<UiState<List<UiCharacter>>> {
   final uiMapper = GetIt.I.get<UiCharacterMapper>();
   final getRickMortyCharactersUseCase =
       GetIt.I.get<GetRickMortyCharactersUseCase>();
-  final List<UiCharacter> char = [];
+  final List<UiCharacter> charactersToDisplayInUi = [];
+  late bool isFilterRequest = false;
+  late String nameFilter = '';
 
   CharactersCubit() : super(Initial()) {
-    loadCharacters(page: 1);
+    loadCharacters();
   }
 
   /// Load Rick & Morty characters
-  void loadCharacters({required int page}) {
+  void loadCharacters([int? page = 1]) {
     if (page == 1) {
       emit(Loading());
     }
-    getRickMortyCharactersUseCase.perform(
-        handleResponse, error, complete, page);
+    isFilterRequest = nameFilter.isNotEmpty;
+    getRickMortyCharactersUseCase.perform(handleResponse, error, complete,
+        CharacterListReqParams(page: page, nameFilter: nameFilter));
+  }
+
+  void setNameFilter([String nameFilter = '']) {
+    this.nameFilter = nameFilter;
   }
 
   /// Handle response data
@@ -36,8 +43,13 @@ class CharactersCubit extends Cubit<UiState<List<UiCharacter>>> {
       } else if (responseData is api_response.Success) {
         var characters = (responseData as api_response.Success);
         final uiCharacters = uiMapper.mapToPresentation(characters.data);
-        char.addAll(uiCharacters.characters);
-        emit(Success(data: char));
+        if (uiCharacters.characters.isNotEmpty) {
+          if (isFilterRequest) {
+            charactersToDisplayInUi.clear();
+          }
+          charactersToDisplayInUi.addAll(uiCharacters.characters);
+        }
+        emit(Success(data: charactersToDisplayInUi));
       }
     }
   }

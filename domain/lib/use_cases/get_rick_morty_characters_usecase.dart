@@ -7,20 +7,30 @@ import 'package:domain/repositories/characters/characters_repo.dart';
 
 import '../validations.dart';
 
+class CharacterListReqParams {
+  final int? page;
+  final String nameFilter;
+
+  const CharacterListReqParams(
+      {required this.page, required this.nameFilter});
+}
+
 class GetRickMortyCharactersUseCase
-    extends UseCase<CharacterListUseCaseResponse, int> {
+    extends UseCase<CharacterListUseCaseResponse, CharacterListReqParams> {
   final CharactersRepository repo;
 
   GetRickMortyCharactersUseCase(this.repo);
 
   @override
   Future<Stream<CharacterListUseCaseResponse>> buildUseCaseStream(
-      int? page) async {
+      CharacterListReqParams? characterListReqParams) async {
     final controller = StreamController<CharacterListUseCaseResponse>();
     try {
-      if (page != null) {
+      if (characterListReqParams != null) {
         // Fetch from repository
-        final characterList = await repo.getRickAndMortyCharacters(page);
+        final characterList = await repo.getRickAndMortyCharacters(
+            characterListReqParams.page ?? 0,
+            characterListReqParams.nameFilter);
         // Adding it triggers the .onNext() in the `Observer`
         controller.add(CharacterListUseCaseResponse(characterList));
         logger.finest('GetRickMortyCharactersUseCase successful.');

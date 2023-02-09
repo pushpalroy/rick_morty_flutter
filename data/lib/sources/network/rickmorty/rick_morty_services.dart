@@ -11,10 +11,10 @@ class RickMortyServices {
 
   RickMortyServices(this.service);
 
-  Future<ApiResponse<DTCharactersList>> getCharactersList(int page) async {
+  Future<ApiResponse<DTCharactersList>> getCharactersList(int page, String nameFilter) async {
     final query = '''
       query {
-        characters(page: $page, filter: { name: "" }) {
+        characters(page: $page, filter: { name: "$nameFilter" }) {
           info {
             count
           }

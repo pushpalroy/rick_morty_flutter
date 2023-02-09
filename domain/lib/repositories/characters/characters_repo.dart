@@ -4,7 +4,7 @@ import 'package:domain/entities/characters/dm_character.dart';
 import 'package:domain/entities/characters/dm_character_info.dart';
 
 abstract class CharactersRepository {
-  Future<ApiResponse<CharacterList>> getRickAndMortyCharacters(int page);
+  Future<ApiResponse<CharacterList>> getRickAndMortyCharacters(int page, String nameFilter);
 
   Future<ApiResponse<CharacterInfo>> getCharacterInfo(int id);
 }
