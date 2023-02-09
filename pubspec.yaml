@@ -42,6 +42,7 @@ dependencies:
   intl: ^0.17.0
   graphql_flutter: ^5.1.2
   transparent_image: ^2.0.0
+  like_button: ^2.0.5
 
   clean_architecture:
     path: ./clean_architecture

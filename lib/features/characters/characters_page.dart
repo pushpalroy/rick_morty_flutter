@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:like_button/like_button.dart';
 import 'package:rick_morty_flutter/features/characters/characters_cubit.dart';
 import 'package:rick_morty_flutter/models/ui_state.dart';
 import 'package:rick_morty_flutter/routing/routes.dart';
@@ -352,29 +353,53 @@ class CharacterItemWidget extends StatelessWidget {
                         ),
                       ],
                     ),
-                    Padding(
-                      padding:
-                          const EdgeInsets.only(top: 24, right: 16, left: 16),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(16.0)),
-                          boxShadow: <BoxShadow>[
-                            BoxShadow(
-                                color: Colors.grey.withOpacity(0.9),
-                                offset: const Offset(0.0, 0.0),
-                                blurRadius: 8.0),
-                          ],
-                        ),
-                        child: ClipRRect(
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(16.0)),
-                          child: AspectRatio(
-                              aspectRatio: 1,
-                              child: Image.network(character!.image)),
+                    Stack(children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.only(right: 16, left: 16),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(16.0)),
+                            boxShadow: <BoxShadow>[
+                              BoxShadow(
+                                  color: Colors.grey.withOpacity(0.9),
+                                  offset: const Offset(0.0, 0.0),
+                                  blurRadius: 8.0),
+                            ],
+                          ),
+                          child: ClipRRect(
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(16.0)),
+                            child: AspectRatio(
+                                aspectRatio: 1,
+                                child: Image.network(character!.image)),
+                          ),
                         ),
                       ),
-                    ),
+                      Positioned(
+                        bottom: 12,
+                        right: 24,
+                        //give the values according to your requirement
+                        child: LikeButton(
+                            size: 24,
+                            circleColor: const CircleColor(
+                                start: Color(0xffff4545),
+                                end: Color(0xffffbcbc)),
+                            bubblesColor: const BubblesColor(
+                              dotPrimaryColor: Color(0xffff5050),
+                              dotSecondaryColor: Color(0xffff6100),
+                            ),
+                            likeBuilder: (bool isLiked) {
+                              return Icon(
+                                Icons.favorite,
+                                color: isLiked
+                                    ? const Color(0xffff3737)
+                                    : const Color(0xa3ffffff),
+                                size: 24,
+                              );
+                            }),
+                      ),
+                    ]),
                   ],
                 ),
               ),

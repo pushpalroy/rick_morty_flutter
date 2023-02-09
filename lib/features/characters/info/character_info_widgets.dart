@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:like_button/like_button.dart';
 import 'package:transparent_image/transparent_image.dart';
 
 const double infoHeight = 364.0;
@@ -149,15 +150,27 @@ Widget getCharacterInfoWidget(
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(50.0)),
               elevation: 10.0,
-              child: const SizedBox(
+              child: SizedBox(
                 width: 60,
                 height: 60,
                 child: Center(
-                  child: Icon(
-                    Icons.favorite,
-                    color: Colors.white,
-                    size: 30,
-                  ),
+                  child: LikeButton(
+                      size: 32,
+                      circleColor: const CircleColor(
+                          start: Color(0xffff4545), end: Color(0xffffbcbc)),
+                      bubblesColor: const BubblesColor(
+                        dotPrimaryColor: Color(0xffff5050),
+                        dotSecondaryColor: Color(0xffff6100),
+                      ),
+                      likeBuilder: (bool isLiked) {
+                        return Icon(
+                          Icons.favorite,
+                          color: isLiked
+                              ? const Color(0xffff3737)
+                              : const Color(0xffffffff),
+                          size: 32,
+                        );
+                      }),
                 ),
               ),
             ),
