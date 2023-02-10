@@ -1,0 +1,7 @@
+fragment CharacterCard on Character {
+    id
+    name
+    status
+    image
+    species
+}

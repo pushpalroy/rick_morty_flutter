@@ -1,0 +1,16 @@
+type Characters {
+    info: Info
+    results: [Character]
+}
+
+type Info {
+    count: Int
+}
+
+type Character {
+    id: String
+    name: String
+    status: String
+    image: String
+    species: String
+}
