@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rick_morty_flutter/features/characters/characters_page.dart';
 import 'package:rick_morty_flutter/features/dashboard/dashboard_cubit.dart';
+import 'package:rick_morty_flutter/features/locations/locations_page.dart';
 import 'package:rick_morty_flutter/models/ui_state.dart';
 import 'package:rick_morty_flutter/presentation/core/widgets/platform_scaffold.dart';
 import 'package:rick_morty_flutter/ui/model/characters/ui_character.dart';
@@ -48,7 +49,7 @@ class TabBarPage extends StatelessWidget {
               return const TabBarView(
                 children: [
                   CharactersPage(),
-                  Icon(Icons.directions_transit),
+                  LocationsPage(),
                   Icon(Icons.directions_bike),
                 ],
               );

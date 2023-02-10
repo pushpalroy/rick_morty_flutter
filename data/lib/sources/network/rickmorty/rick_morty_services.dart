@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'package:data/models/locations/dt_location_list.dart';
 import 'package:domain/entities/api_response.dart';
 import 'package:injectable/injectable.dart';
 import '../../../models/characters/dt_character_info.dart';
@@ -11,7 +12,8 @@ class RickMortyServices {
 
   RickMortyServices(this.service);
 
-  Future<ApiResponse<DTCharactersList>> getCharactersList(int page, String nameFilter) async {
+  Future<ApiResponse<DTCharactersList>> getCharactersList(
+      int page, String nameFilter) async {
     final query = '''
       query {
         characters(page: $page, filter: { name: "$nameFilter" }) {
@@ -71,6 +73,34 @@ class RickMortyServices {
         return Failure(error: Exception(e));
       }
       return Success(data: a);
+    } else {
+      return Failure(error: (response as Failure).error);
+    }
+  }
+
+  Future<ApiResponse<DTLocationsList>> getLocationsList() async {
+    const query = '''
+        query {
+          locations {
+            info {
+              count
+            }
+            results {
+              id
+              name
+              type
+              dimension
+              created
+            }
+        }
+      }
+    ''';
+
+    final response = await service.performQuery(query, variables: {});
+    log("$response");
+
+    if (response is Success) {
+      return Success(data: DTLocationsList.fromJson(response.data));
     } else {
       return Failure(error: (response as Failure).error);
     }

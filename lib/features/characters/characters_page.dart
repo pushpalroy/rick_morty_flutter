@@ -33,7 +33,7 @@ class CharactersListWidget extends StatefulWidget {
 }
 
 class _CharactersListWidgetState extends State<CharactersListWidget>
-    with TickerProviderStateMixin {
+    with SingleTickerProviderStateMixin {
   AnimationController? animationController;
   final searchTextController = TextEditingController();
   var page = 1;
@@ -41,12 +41,12 @@ class _CharactersListWidgetState extends State<CharactersListWidget>
   @override
   void initState() {
     animationController = AnimationController(
-        duration: const Duration(milliseconds: 1200), vsync: this);
+        duration: const Duration(milliseconds: 1500), vsync: this);
     super.initState();
   }
 
-  Future<bool> getData() async {
-    await Future<dynamic>.delayed(const Duration(milliseconds: 200));
+  Future<bool> delay() async {
+    await Future<dynamic>.delayed(const Duration(milliseconds: 100));
     return true;
   }
 
@@ -69,7 +69,7 @@ class _CharactersListWidgetState extends State<CharactersListWidget>
                           child: Padding(
                         padding: const EdgeInsets.only(top: 8),
                         child: FutureBuilder<bool>(
-                          future: getData(),
+                          future: delay(),
                           builder: (BuildContext context,
                               AsyncSnapshot<bool> snapshot) {
                             if (!snapshot.hasData) {
@@ -106,16 +106,6 @@ class _CharactersListWidgetState extends State<CharactersListWidget>
                                     (int index) {
                                       final int count =
                                           (state as Success).data.length;
-                                      final Animation<double> animation =
-                                          Tween<double>(begin: 0.0, end: 1.0)
-                                              .animate(
-                                        CurvedAnimation(
-                                          parent: animationController!,
-                                          curve: Interval(
-                                              (1 / count) * index, 1.0,
-                                              curve: Curves.fastOutSlowIn),
-                                        ),
-                                      );
                                       animationController?.forward();
                                       return CharacterItemWidget(
                                         callback: (characterId) {
@@ -125,7 +115,8 @@ class _CharactersListWidgetState extends State<CharactersListWidget>
                                         },
                                         character:
                                             (state as Success).data[index],
-                                        animation: animation,
+                                        animation:
+                                            getListAnimation(count, index),
                                         animationController:
                                             animationController,
                                       );
@@ -140,6 +131,15 @@ class _CharactersListWidgetState extends State<CharactersListWidget>
                     ])
               : Container();
     });
+  }
+
+  Animation<double> getListAnimation(int count, int index) {
+    return Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
+        parent: animationController!,
+        curve: Interval((1 / count) * index, 1.0, curve: Curves.fastLinearToSlowEaseIn),
+      ),
+    );
   }
 
   Widget getSearchBarUI(TextEditingController searchTextController) {
