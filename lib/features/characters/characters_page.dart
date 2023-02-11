@@ -36,7 +36,6 @@ class _CharactersListWidgetState extends State<CharactersListWidget>
     with SingleTickerProviderStateMixin {
   AnimationController? animationController;
   final searchTextController = TextEditingController();
-  int page = 1;
 
   @override
   void initState() {
@@ -74,6 +73,7 @@ class _CharactersListWidgetState extends State<CharactersListWidget>
                               BuildContext context,
                               AsyncSnapshot<bool> snapshot,
                             ) {
+                              final cubit = context.read<CharactersCubit>();
                               if (!snapshot.hasData) {
                                 return const SizedBox();
                               } else {
@@ -82,12 +82,16 @@ class _CharactersListWidgetState extends State<CharactersListWidget>
                                     if (scrollNotification.metrics.pixels ==
                                         scrollNotification
                                             .metrics.maxScrollExtent) {
-                                      setState(() {
-                                        page++;
-                                        context
-                                            .read<CharactersCubit>()
-                                            .loadCharacters(page);
-                                      });
+                                      setState(
+                                        () {
+                                          if (!cubit.isPageLoadInProgress) {
+                                            cubit.page++;
+                                            cubit
+                                              ..loadCharacters()
+                                              ..isPageLoadInProgress = true;
+                                          }
+                                        },
+                                      );
                                     }
                                     return false;
                                   },
@@ -154,6 +158,7 @@ class _CharactersListWidgetState extends State<CharactersListWidget>
   }
 
   Widget getSearchBarUI(TextEditingController searchTextController) {
+    final cubit = context.read<CharactersCubit>();
     return Padding(
       padding: const EdgeInsets.only(top: 8, right: 8, left: 8),
       child: Row(
@@ -209,11 +214,9 @@ class _CharactersListWidgetState extends State<CharactersListWidget>
                     ),
                     GestureDetector(
                       onTap: () {
-                        context
-                            .read<CharactersCubit>()
-                            .setNameFilter(searchTextController.text);
-
-                        context.read<CharactersCubit>().loadCharacters();
+                        cubit
+                          ..nameFilter = searchTextController.text
+                          ..loadCharacters();
                       },
                       child: const SizedBox(
                         width: 60,
@@ -276,10 +279,10 @@ class CharacterItemWidget extends StatelessWidget {
                       children: <Widget>[
                         Expanded(
                           child: DecoratedBox(
-                            decoration: BoxDecoration(
-                              color: HexColor('#edeff0'),
+                            decoration: const BoxDecoration(
+                              color: Color(0xffedeff0),
                               borderRadius:
-                                  const BorderRadius.all(Radius.circular(16)),
+                                  BorderRadius.all(Radius.circular(16)),
                               // border: new Border.all(
                               //     color: DesignCourseAppTheme.notWhite),
                             ),
@@ -298,11 +301,11 @@ class CharacterItemWidget extends StatelessWidget {
                                           character!.name,
                                           textAlign: TextAlign.center,
                                           overflow: TextOverflow.ellipsis,
-                                          style: TextStyle(
+                                          style: const TextStyle(
                                             fontWeight: FontWeight.w600,
                                             fontSize: 16,
                                             letterSpacing: 0.27,
-                                            color: HexColor('#807e7e'),
+                                            color: Color(0xff807e7e),
                                           ),
                                         ),
                                       ),
@@ -320,35 +323,35 @@ class CharacterItemWidget extends StatelessWidget {
                                             Text(
                                               character!.species,
                                               textAlign: TextAlign.center,
-                                              style: TextStyle(
+                                              style: const TextStyle(
                                                 fontWeight: FontWeight.w300,
                                                 overflow: TextOverflow.ellipsis,
                                                 fontSize: 12,
                                                 letterSpacing: 0.27,
-                                                color: HexColor('#807e7e'),
+                                                color: Color(0xff807e7e),
                                               ),
                                             ),
                                             const SizedBox(width: 4),
-                                            Text(
+                                            const Text(
                                               '.',
                                               textAlign: TextAlign.center,
                                               style: TextStyle(
                                                 fontWeight: FontWeight.w800,
                                                 fontSize: 12,
                                                 letterSpacing: 0.27,
-                                                color: HexColor('#807e7e'),
+                                                color: Color(0xff807e7e),
                                               ),
                                             ),
                                             const SizedBox(width: 4),
                                             Text(
                                               character!.status,
                                               textAlign: TextAlign.center,
-                                              style: TextStyle(
+                                              style: const TextStyle(
                                                 fontWeight: FontWeight.w300,
                                                 overflow: TextOverflow.ellipsis,
                                                 fontSize: 12,
                                                 letterSpacing: 0.27,
-                                                color: HexColor('#6e6d6d'),
+                                                color: Color(0xff6e6d6d),
                                               ),
                                             )
                                           ],
@@ -379,8 +382,9 @@ class CharacterItemWidget extends StatelessWidget {
                                   const BorderRadius.all(Radius.circular(16)),
                               boxShadow: <BoxShadow>[
                                 BoxShadow(
-                                    color: Colors.grey.withOpacity(0.9),
-                                    blurRadius: 8),
+                                  color: Colors.grey.withOpacity(0.9),
+                                  blurRadius: 8,
+                                ),
                               ],
                             ),
                             child: ClipRRect(
@@ -430,14 +434,14 @@ class CharacterItemWidget extends StatelessWidget {
   }
 }
 
-class HexColor extends Color {
-  HexColor(String hexColor) : super(_getColorFromHex(hexColor));
-
-  static int _getColorFromHex(String hexColor) {
-    hexColor = hexColor.toUpperCase().replaceAll('#', '');
-    if (hexColor.length == 6) {
-      hexColor = 'FF$hexColor';
-    }
-    return int.parse(hexColor, radix: 16);
-  }
-}
+// class HexColor extends Color {
+//   HexColor(String hexColor) : super(_getColorFromHex(hexColor));
+//
+//   static int _getColorFromHex(String hexColor) {
+//     var formattedHexColor = hexColor.toUpperCase().replaceAll('#', '');
+//     if (hexColor.length == 6) {
+//       formattedHexColor = 'FF$hexColor';
+//     }
+//     return int.parse(formattedHexColor, radix: 16);
+//   }
+// }

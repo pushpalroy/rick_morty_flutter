@@ -18,19 +18,21 @@ class CharactersCubit extends Cubit<UiState<List<UiCharacter>>> {
   final List<UiCharacter> charactersToDisplayInUi = [];
   late bool isFilterRequest = false;
   late String nameFilter = '';
+  bool isPageLoadInProgress = false;
+  int page = 1;
 
   /// Load Rick & Morty characters
-  void loadCharacters([int? page = 1]) {
+  void loadCharacters() {
     if (page == 1) {
       emit(Loading());
     }
     isFilterRequest = nameFilter.isNotEmpty;
-    getRickMortyCharactersUseCase.perform(handleResponse, error, complete,
-        CharacterListReqParams(page: page, nameFilter: nameFilter),);
-  }
-
-  void setNameFilter([String nameFilter = '']) {
-    this.nameFilter = nameFilter;
+    getRickMortyCharactersUseCase.perform(
+      handleResponse,
+      error,
+      complete,
+      CharacterListReqParams(page: page, nameFilter: nameFilter),
+    );
   }
 
   /// Handle response data
@@ -54,6 +56,7 @@ class CharactersCubit extends Cubit<UiState<List<UiCharacter>>> {
         emit(Success(data: charactersToDisplayInUi));
       }
     }
+    isPageLoadInProgress = false;
   }
 
   void complete() {}
