@@ -6,14 +6,11 @@ import 'package:injectable/injectable.dart';
 
 @singleton
 class GraphQLService {
-  late final GraphQLClient _client;
+  late final GraphQLClient _graphQLClient;
 
   GraphQLService() {
-    HttpLink link =
-        HttpLink("https://rickandmortyapi.com/graphql", defaultHeaders: {});
-
-    _client =
-        GraphQLClient(link: link, cache: GraphQLCache(store: InMemoryStore()));
+    final link = HttpLink("https://rickandmortyapi.com/graphql");
+    _graphQLClient = GraphQLClient(link: link, cache: GraphQLCache());
   }
 
   Future<ApiResponse> performQuery(String query,
@@ -24,15 +21,18 @@ class GraphQLService {
         variables: variables,
       );
 
-      final result = await _client.query(options);
+      final result = await _graphQLClient.query(options);
 
       if (result.hasException) {
-        return Failure(error: APIException(result.exception.toString(), 0, ''));
+        var errorCode =
+            result.context.entry<HttpLinkResponseContext>()?.statusCode ?? 0;
+        return Failure(
+            error: APIException(result.exception.toString(), errorCode, ''));
       } else {
         return Success(data: result.data);
       }
     } on Exception catch (_, e) {
-      return Failure(error: APIException("No internet connection", 0, ''));
+      return Failure(error: APIException(e.toString(), 0, ''));
     }
   }
 
@@ -41,7 +41,7 @@ class GraphQLService {
     MutationOptions options =
         MutationOptions(document: gql(query), variables: variables);
 
-    final result = await _client.mutate(options);
+    final result = await _graphQLClient.mutate(options);
 
     log(result.toString());
 

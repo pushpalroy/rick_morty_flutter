@@ -65,14 +65,14 @@ class RickMortyServices {
     log("$response");
 
     if (response is Success) {
-      DTCharacterInfo? a;
+      DTCharacterInfo? info;
       try {
-        a = DTCharacterInfo.fromJson(response.data['character']);
+        info = DTCharacterInfo.fromJson(response.data['character']);
       } catch (e) {
         log("error", error: e);
         return Failure(error: Exception(e));
       }
-      return Success(data: a);
+      return Success(data: info);
     } else {
       return Failure(error: (response as Failure).error);
     }
