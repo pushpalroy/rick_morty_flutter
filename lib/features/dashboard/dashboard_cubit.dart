@@ -5,11 +5,11 @@ import 'package:rick_morty_flutter/ui/model/characters/ui_character.dart';
 import 'package:rick_morty_flutter/ui/model/characters/ui_character_mapper.dart';
 
 class DashboardCubit extends Cubit<UiState<UiCharacterList>> {
-  final uiCharacterMapper = GetIt.I.get<UiCharacterMapper>();
 
   DashboardCubit() : super(Initial()) {
     loadDashboard();
   }
+  final uiCharacterMapper = GetIt.I.get<UiCharacterMapper>();
 
   void loadDashboard() {
     emit(Loading());

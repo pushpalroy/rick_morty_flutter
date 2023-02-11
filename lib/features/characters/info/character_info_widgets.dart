@@ -2,22 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:like_button/like_button.dart';
 import 'package:transparent_image/transparent_image.dart';
 
-const double infoHeight = 364.0;
+const double infoHeight = 364;
 
 Widget getCharacterInfoWidget(
-    BuildContext context,
-    AnimationController? animationController,
-    double opacity1,
-    double opacity2,
-    double opacity3,
-    String imageUrl,
-    String characterName,
-    String characterStatus,
-    String characterSpecies,
-    String gender,
-    String origin,
-    String location) {
-  final double tempHeight = MediaQuery.of(context).size.height -
+  BuildContext context,
+  AnimationController? animationController,
+  double opacity1,
+  double opacity2,
+  double opacity3,
+  String imageUrl,
+  String characterName,
+  String characterStatus,
+  String characterSpecies,
+  String gender,
+  String origin,
+  String location,
+) {
+  final tempHeight = MediaQuery.of(context).size.height -
       (MediaQuery.of(context).size.width / 1.2) +
       24.0;
   return Scaffold(
@@ -31,28 +32,29 @@ Widget getCharacterInfoWidget(
               child: FadeInImage.memoryNetwork(
                 placeholder: kTransparentImage,
                 image: imageUrl,
-                imageScale: 1,
                 fit: BoxFit.fill,
               ),
             ),
           ],
         ),
         Positioned(
-          top: (MediaQuery.of(context).size.width / 1.1),
+          top: MediaQuery.of(context).size.width / 1.1,
           bottom: 0,
           left: 0,
           right: 0,
-          child: Container(
+          child: DecoratedBox(
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(32.0),
-                  topRight: Radius.circular(32.0)),
+                topLeft: Radius.circular(32),
+                topRight: Radius.circular(32),
+              ),
               boxShadow: <BoxShadow>[
                 BoxShadow(
-                    color: Colors.grey.withOpacity(0.2),
-                    offset: const Offset(1.1, 1.1),
-                    blurRadius: 10.0),
+                  color: Colors.grey.withOpacity(0.2),
+                  offset: const Offset(1.1, 1.1),
+                  blurRadius: 10,
+                ),
               ],
             ),
             child: Padding(
@@ -60,16 +62,19 @@ Widget getCharacterInfoWidget(
               child: SingleChildScrollView(
                 child: Container(
                   constraints: BoxConstraints(
-                      minHeight: infoHeight,
-                      maxHeight:
-                          tempHeight > infoHeight ? tempHeight : infoHeight),
+                    minHeight: infoHeight,
+                    maxHeight:
+                        tempHeight > infoHeight ? tempHeight : infoHeight,
+                  ),
                   child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Padding(
                         padding: const EdgeInsets.only(
-                            top: 48.0, left: 18, right: 16),
+                          top: 48,
+                          left: 18,
+                          right: 16,
+                        ),
                         child: Text(
                           characterName,
                           textAlign: TextAlign.left,
@@ -83,10 +88,13 @@ Widget getCharacterInfoWidget(
                       ),
                       Padding(
                         padding: const EdgeInsets.only(
-                            left: 18, right: 18, bottom: 8, top: 24),
+                          left: 18,
+                          right: 18,
+                          bottom: 8,
+                          top: 24,
+                        ),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.center,
                           children: <Widget>[
                             Text(
                               characterSpecies,
@@ -142,35 +150,40 @@ Widget getCharacterInfoWidget(
           top: (MediaQuery.of(context).size.width / 1.2) - 24.0 - 35,
           right: 35,
           child: ScaleTransition(
-            alignment: Alignment.center,
             scale: CurvedAnimation(
-                parent: animationController!, curve: Curves.fastOutSlowIn),
+              parent: animationController!,
+              curve: Curves.fastOutSlowIn,
+            ),
             child: Card(
               color: Colors.blue,
               shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(50.0)),
-              elevation: 10.0,
+                borderRadius: BorderRadius.circular(50),
+              ),
+              elevation: 10,
               child: SizedBox(
                 width: 60,
                 height: 60,
                 child: Center(
                   child: LikeButton(
-                      size: 32,
-                      circleColor: const CircleColor(
-                          start: Color(0xffff4545), end: Color(0xffffbcbc)),
-                      bubblesColor: const BubblesColor(
-                        dotPrimaryColor: Color(0xffff5050),
-                        dotSecondaryColor: Color(0xffff6100),
-                      ),
-                      likeBuilder: (bool isLiked) {
-                        return Icon(
-                          Icons.favorite,
-                          color: isLiked
-                              ? const Color(0xffff3737)
-                              : const Color(0xffffffff),
-                          size: 32,
-                        );
-                      }),
+                    size: 32,
+                    circleColor: const CircleColor(
+                      start: Color(0xffff4545),
+                      end: Color(0xffffbcbc),
+                    ),
+                    bubblesColor: const BubblesColor(
+                      dotPrimaryColor: Color(0xffff5050),
+                      dotSecondaryColor: Color(0xffff6100),
+                    ),
+                    likeBuilder: (bool isLiked) {
+                      return Icon(
+                        Icons.favorite,
+                        color: isLiked
+                            ? const Color(0xffff3737)
+                            : const Color(0xffffffff),
+                        size: 32,
+                      );
+                    },
+                  ),
                 ),
               ),
             ),
@@ -214,16 +227,17 @@ Widget getCharacterInfoWidgetLoader(BuildContext context) {
         ],
       ),
       Positioned(
-        top: (MediaQuery.of(context).size.width / 1.1),
+        top: MediaQuery.of(context).size.width / 1.1,
         bottom: 0,
         left: 0,
         right: 0,
-        child: Container(
+        child: DecoratedBox(
           decoration: const BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(32.0),
-                topRight: Radius.circular(32.0)),
+              topLeft: Radius.circular(32),
+              topRight: Radius.circular(32),
+            ),
             boxShadow: <BoxShadow>[],
           ),
           child: Padding(
@@ -231,15 +245,17 @@ Widget getCharacterInfoWidgetLoader(BuildContext context) {
             child: SingleChildScrollView(
               child: Container(
                 constraints: const BoxConstraints(
-                    minHeight: infoHeight, maxHeight: infoHeight),
+                  minHeight: infoHeight,
+                  maxHeight: infoHeight,
+                ),
                 child: Column(
                   children: <Widget>[
                     const Padding(
-                      padding: EdgeInsets.only(),
+                      padding: EdgeInsets.zero,
                       child: SizedBox(),
                     ),
                     Padding(
-                      padding: const EdgeInsets.only(),
+                      padding: EdgeInsets.zero,
                       child: Row(
                         children: <Widget>[
                           const SizedBox(),
@@ -251,9 +267,7 @@ Widget getCharacterInfoWidgetLoader(BuildContext context) {
                     ),
                     Padding(
                       padding: const EdgeInsets.all(8),
-                      child: Row(
-                        children: const <Widget>[],
-                      ),
+                      child: Row(),
                     ),
                     SizedBox(
                       height: MediaQuery.of(context).padding.bottom,
@@ -271,7 +285,7 @@ Widget getCharacterInfoWidgetLoader(BuildContext context) {
         child: Card(
           color: Colors.blue,
           shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(50.0)),
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
           child: const SizedBox(
             width: 60,
             height: 60,
@@ -285,24 +299,25 @@ Widget getCharacterInfoWidgetLoader(BuildContext context) {
 
 Widget getCharacterBioWidget(String gender, String origin, String location) {
   return Padding(
-    padding: const EdgeInsets.all(8.0),
+    padding: const EdgeInsets.all(8),
     child: Container(
       width: double.infinity,
       margin: const EdgeInsets.all(16),
       padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: const BorderRadius.all(Radius.circular(16.0)),
+        borderRadius: const BorderRadius.all(Radius.circular(16)),
         boxShadow: <BoxShadow>[
           BoxShadow(
-              color: Colors.grey.withOpacity(0.2),
-              offset: const Offset(1.1, 1.1),
-              blurRadius: 8.0),
+            color: Colors.grey.withOpacity(0.2),
+            offset: const Offset(1.1, 1.1),
+            blurRadius: 8,
+          ),
         ],
       ),
       child: Padding(
-        padding: const EdgeInsets.only(
-            left: 18.0, right: 18.0, top: 12.0, bottom: 12.0),
+        padding:
+            const EdgeInsets.only(left: 18, right: 18, top: 12, bottom: 12),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.start,

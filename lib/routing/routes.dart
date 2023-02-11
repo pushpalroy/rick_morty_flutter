@@ -3,7 +3,7 @@ import 'package:rick_morty_flutter/features/characters/info/character_info_page.
 import 'package:rick_morty_flutter/features/dashboard/dashboard_page.dart';
 
 const rootRoute = '/';
-const characterRoute = "/characterInfo";
+const characterRoute = '/characterInfo';
 
 final routes = GoRouter(
   routes: [dashboardRoute(), characterInfoRoute()],
@@ -20,8 +20,8 @@ GoRoute characterInfoRoute() {
   return GoRoute(
     path: characterRoute,
     builder: (context, state) {
-      String characterId = state.extra as String;
-      return CharacterInfoPage(characterId: characterId);
+      final characterId = state.extra as String?;
+      return CharacterInfoPage(characterId: characterId ?? '0');
     },
   );
 }

@@ -6,10 +6,10 @@ part 'dt_character.g.dart';
 class DTCharacter {
   DTCharacter(this.id, this.name, this.image, this.status, this.species);
 
-  String id, name, image, status, species;
-
   factory DTCharacter.fromJson(Map<String, dynamic> json) =>
       _$DTCharacterFromJson(json);
+
+  String id, name, image, status, species;
 
   Map<String, dynamic> toJson() => _$DTCharacterToJson(this);
 }

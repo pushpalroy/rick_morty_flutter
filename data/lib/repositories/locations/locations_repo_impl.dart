@@ -3,15 +3,15 @@ import 'package:data/models/locations/dt_location_list.dart';
 import 'package:data/sources/network/rickmorty/rick_morty_services.dart';
 import 'package:domain/entities/api_response.dart';
 import 'package:domain/entities/locations/dm_location.dart';
-import 'package:injectable/injectable.dart';
 import 'package:domain/repositories/locations/locations_repo.dart';
+import 'package:injectable/injectable.dart';
 
 @Injectable(as: LocationsRepository)
 class LocationsRepositoryImpl implements LocationsRepository {
+  LocationsRepositoryImpl(this.services, this.locationListMapper);
+
   final LocationListMapper locationListMapper;
   final RickMortyServices services;
-
-  LocationsRepositoryImpl(this.services, this.locationListMapper);
 
   @override
   Future<ApiResponse<LocationList>> getLocations() async {

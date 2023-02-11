@@ -29,32 +29,35 @@ class TabBarPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-        length: 3,
-        child: RmScaffold(
-            androidAppBar: AppBar(
-              bottom: const TabBar(
-                tabs: [
-                  Tab(child: Text('Characters')),
-                  Tab(child: Text('Locations')),
-                  Tab(child: Text('Episodes')),
-                ],
-              ),
-              title: text(),
-            ),
-            iosNavBar: CupertinoNavigationBar(
-              middle: text(),
-            ),
-            body: BlocBuilder<DashboardCubit, UiState<UiCharacterList>>(
-                builder: (context, state) {
-              return const TabBarView(
-                children: [
-                  CharactersPage(),
-                  LocationsPage(),
-                  Icon(Icons.directions_bike),
-                ],
-              );
-            })));
+      length: 3,
+      child: RmScaffold(
+        androidAppBar: AppBar(
+          bottom: const TabBar(
+            tabs: [
+              Tab(child: Text('Characters')),
+              Tab(child: Text('Locations')),
+              Tab(child: Text('Episodes')),
+            ],
+          ),
+          title: text(),
+        ),
+        iosNavBar: CupertinoNavigationBar(
+          middle: text(),
+        ),
+        body: BlocBuilder<DashboardCubit, UiState<UiCharacterList>>(
+          builder: (context, state) {
+            return const TabBarView(
+              children: [
+                CharactersPage(),
+                LocationsPage(),
+                Icon(Icons.directions_bike),
+              ],
+            );
+          },
+        ),
+      ),
+    );
   }
 
-  Text text() => const Text("Rick & Morty");
+  Text text() => const Text('Rick & Morty');
 }

@@ -7,14 +7,15 @@ import 'package:data/mapper/entity_mapper.dart';
 @injectable
 class CharacterListMapper
     extends EntityMapper<CharacterList, DTCharactersList> {
-  CharacterMapper characterMapper;
-
   CharacterListMapper(this.characterMapper);
+
+  CharacterMapper characterMapper;
 
   @override
   DTCharactersList mapToData(CharacterList model) {
     return DTCharactersList(
-        model.characterList.map((e) => characterMapper.mapToData(e)).toList());
+      model.characterList.map((e) => characterMapper.mapToData(e)).toList(),
+    );
   }
 
   @override
@@ -30,12 +31,22 @@ class CharacterMapper extends EntityMapper<Character, DTCharacter> {
   @override
   DTCharacter mapToData(Character model) {
     return DTCharacter(
-        model.id, model.name, model.image, model.status, model.species);
+      model.id,
+      model.name,
+      model.image,
+      model.status,
+      model.species,
+    );
   }
 
   @override
   Character mapToDomain(DTCharacter entity) {
     return Character(
-        entity.id, entity.name, entity.image, entity.status, entity.species);
+      entity.id,
+      entity.name,
+      entity.image,
+      entity.status,
+      entity.species,
+    );
   }
 }

@@ -1,29 +1,31 @@
-import 'package:flutter/foundation.dart';
-import 'dart:isolate';
-import 'package:rxdart/rxdart.dart';
 import 'dart:async';
+import 'dart:isolate';
+
 import 'package:clean_architecture/src/usecase.dart';
+import 'package:flutter/foundation.dart';
+import 'package:rxdart/rxdart.dart';
 
 enum BackgroundUseCaseState { idle, loading, calculating }
 
 typedef UseCaseTask = void Function(
-    BackgroundUseCaseParams backgroundUseCaseParams);
+  BackgroundUseCaseParams<dynamic> backgroundUseCaseParams,
+);
 
 /// Data structure sent from the isolate back to the main isolate
 class BackgroundUseCaseMessage<T> {
+  BackgroundUseCaseMessage({this.data, this.error, this.done = false});
+
   T? data;
   Error? error;
   bool? done;
-
-  BackgroundUseCaseMessage({this.data, this.error, this.done = false});
 }
 
 /// Data structure sent from the main isolate to the other isolate
 class BackgroundUseCaseParams<T> {
+  BackgroundUseCaseParams(this.port, {this.params});
+
   T? params;
   SendPort port;
-
-  BackgroundUseCaseParams(this.port, {this.params});
 }
 
 /// A specialized type of [UseCase] that executes on a different isolate.
@@ -88,12 +90,6 @@ class BackgroundUseCaseParams<T> {
 ///}
 /// ```
 abstract class BackgroundUseCase<T, Params> extends UseCase<T, Params> {
-  BackgroundUseCaseState _state = BackgroundUseCaseState.idle;
-  late Isolate? _isolate;
-  final BehaviorSubject<T> _subject;
-  final ReceivePort _receivePort;
-  static late UseCaseTask _run;
-
   BackgroundUseCase()
       : assert(!kIsWeb, '''
         [BackgroundUseCase] is not supported on web due to dart:isolate limitations.
@@ -104,6 +100,12 @@ abstract class BackgroundUseCase<T, Params> extends UseCase<T, Params> {
     _receivePort.listen(_handleMessage);
   }
 
+  BackgroundUseCaseState _state = BackgroundUseCaseState.idle;
+  late Isolate? _isolate;
+  final BehaviorSubject<T> _subject;
+  final ReceivePort _receivePort;
+  static late UseCaseTask _run;
+
   BackgroundUseCaseState get state => _state;
 
   bool get isRunning => _state != BackgroundUseCaseState.idle;
@@ -113,13 +115,17 @@ abstract class BackgroundUseCase<T, Params> extends UseCase<T, Params> {
   /// to a [BehaviorSubject] using the [observer] provided by the user.
   /// All [Params] are sent to the [_isolate] through [BackgroundUseCaseParams].
   @override
-  void execute(void onData(T? event)?, Function? onError, void onDone()?,
-      [Params? params]) async {
+  void execute(
+    void onData(T? event)?,
+    Function? onError,
+    void onDone()?, [
+    Params? params,
+  ]) async {
     if (!isRunning) {
       _state = BackgroundUseCaseState.loading;
       _subject.listen(onData, onError: onError, onDone: onDone);
       _run = buildUseCaseTask();
-      Isolate.spawn<BackgroundUseCaseParams>(_run,
+      await Isolate.spawn<BackgroundUseCaseParams<dynamic>>(_run,
               BackgroundUseCaseParams(_receivePort.sendPort, params: params))
           .then<void>((Isolate isolate) {
         if (!isRunning) {
@@ -166,13 +172,14 @@ abstract class BackgroundUseCase<T, Params> extends UseCase<T, Params> {
     assert(message is BackgroundUseCaseMessage,
         '''All data and errors sent from the isolate in the static method provided by the user must be
     wrapped inside a `BackgroundUseCaseMessage` object.''');
-    var msg = message as BackgroundUseCaseMessage;
+    final msg = message as BackgroundUseCaseMessage;
     if (msg.data != null) {
       assert(msg.data is T);
-      _subject.add(msg.data);
+      _subject.add(msg.data as T);
     } else if (msg.error != null) {
-      _subject.addError(msg.error!);
-      _subject.close();
+      _subject
+        ..addError(msg.error!)
+        ..close();
     }
 
     if (msg.done!) {

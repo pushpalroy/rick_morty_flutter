@@ -43,6 +43,7 @@ dependencies:
   graphql_flutter: ^5.1.2
   transparent_image: ^2.0.0
   like_button: ^2.0.5
+  pedantic_mono: ^1.21.1
 
   clean_architecture:
     path: ./clean_architecture

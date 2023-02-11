@@ -26,7 +26,7 @@ class CharactersPage extends StatelessWidget {
 class CharactersListWidget extends StatefulWidget {
   const CharactersListWidget({Key? key, this.callBack}) : super(key: key);
 
-  final Function()? callBack;
+  final void Function()? callBack;
 
   @override
   State<StatefulWidget> createState() => _CharactersListWidgetState();
@@ -36,12 +36,14 @@ class _CharactersListWidgetState extends State<CharactersListWidget>
     with SingleTickerProviderStateMixin {
   AnimationController? animationController;
   final searchTextController = TextEditingController();
-  var page = 1;
+  int page = 1;
 
   @override
   void initState() {
     animationController = AnimationController(
-        duration: const Duration(milliseconds: 1500), vsync: this);
+      duration: const Duration(milliseconds: 1500),
+      vsync: this,
+    );
     super.initState();
   }
 
@@ -53,91 +55,100 @@ class _CharactersListWidgetState extends State<CharactersListWidget>
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<CharactersCubit, UiState<List<UiCharacter>>>(
-        builder: (context, state) {
-      return state is Loading
-          ? const Align(
-              alignment: Alignment.center,
-              child: RmProgressBar(),
-            )
-          : state is Success
-              ? Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
+      builder: (context, state) {
+        return state is Loading
+            ? const Align(
+                child: RmProgressBar(),
+              )
+            : state is Success
+                ? Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
                       getSearchBarUI(searchTextController),
                       Flexible(
-                          child: Padding(
-                        padding: const EdgeInsets.only(top: 8),
-                        child: FutureBuilder<bool>(
-                          future: delay(),
-                          builder: (BuildContext context,
-                              AsyncSnapshot<bool> snapshot) {
-                            if (!snapshot.hasData) {
-                              return const SizedBox();
-                            } else {
-                              return NotificationListener<ScrollNotification>(
-                                onNotification: (scrollNotification) {
-                                  if (scrollNotification.metrics.pixels ==
-                                      scrollNotification
-                                          .metrics.maxScrollExtent) {
-                                    setState(() {
-                                      page++;
-                                      context
-                                          .read<CharactersCubit>()
-                                          .loadCharacters(page);
-                                    });
-                                  }
-                                  return false;
-                                },
-                                child: GridView(
-                                  shrinkWrap: true,
-                                  scrollDirection: Axis.vertical,
-                                  padding: const EdgeInsets.all(8),
-                                  physics: const BouncingScrollPhysics(),
-                                  gridDelegate:
-                                      const SliverGridDelegateWithFixedCrossAxisCount(
-                                    crossAxisCount: 2,
-                                    mainAxisSpacing: 24.0,
-                                    crossAxisSpacing: 16.0,
-                                    childAspectRatio: 0.8,
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 8),
+                          child: FutureBuilder<bool>(
+                            future: delay(),
+                            builder: (
+                              BuildContext context,
+                              AsyncSnapshot<bool> snapshot,
+                            ) {
+                              if (!snapshot.hasData) {
+                                return const SizedBox();
+                              } else {
+                                return NotificationListener<ScrollNotification>(
+                                  onNotification: (scrollNotification) {
+                                    if (scrollNotification.metrics.pixels ==
+                                        scrollNotification
+                                            .metrics.maxScrollExtent) {
+                                      setState(() {
+                                        page++;
+                                        context
+                                            .read<CharactersCubit>()
+                                            .loadCharacters(page);
+                                      });
+                                    }
+                                    return false;
+                                  },
+                                  child: GridView(
+                                    shrinkWrap: true,
+                                    padding: const EdgeInsets.all(8),
+                                    physics: const BouncingScrollPhysics(),
+                                    gridDelegate:
+                                        const SliverGridDelegateWithFixedCrossAxisCount(
+                                      crossAxisCount: 2,
+                                      mainAxisSpacing: 24,
+                                      crossAxisSpacing: 16,
+                                      childAspectRatio: 0.8,
+                                    ),
+                                    children: List<Widget>.generate(
+                                      (state as Success).data.length as int,
+                                      (int index) {
+                                        final count = (state as Success)
+                                            .data
+                                            .length as int;
+                                        animationController?.forward();
+                                        return CharacterItemWidget(
+                                          callback: (characterId) {
+                                            // Navigate to character information
+                                            context.push(
+                                              characterRoute,
+                                              extra: characterId,
+                                            );
+                                          },
+                                          character: (state as Success)
+                                              .data[index] as UiCharacter,
+                                          animation:
+                                              getListAnimation(count, index),
+                                          animationController:
+                                              animationController,
+                                        );
+                                      },
+                                    ),
                                   ),
-                                  children: List<Widget>.generate(
-                                    (state as Success).data.length,
-                                    (int index) {
-                                      final int count =
-                                          (state as Success).data.length;
-                                      animationController?.forward();
-                                      return CharacterItemWidget(
-                                        callback: (characterId) {
-                                          // Navigate to character information screen
-                                          context.push(characterRoute,
-                                              extra: characterId);
-                                        },
-                                        character:
-                                            (state as Success).data[index],
-                                        animation:
-                                            getListAnimation(count, index),
-                                        animationController:
-                                            animationController,
-                                      );
-                                    },
-                                  ),
-                                ),
-                              );
-                            }
-                          },
+                                );
+                              }
+                            },
+                          ),
                         ),
-                      ))
-                    ])
-              : Container();
-    });
+                      )
+                    ],
+                  )
+                : Container();
+      },
+    );
   }
 
   Animation<double> getListAnimation(int count, int index) {
-    return Tween<double>(begin: 0.0, end: 1.0).animate(
+    return Tween<double>(begin: 0, end: 1).animate(
       CurvedAnimation(
         parent: animationController!,
-        curve: Interval((1 / count) * index, 1.0, curve: Curves.fastLinearToSlowEaseIn),
+        curve: Interval(
+          (1 / count) * index,
+          1,
+          curve: Curves.fastLinearToSlowEaseIn,
+        ),
       ),
     );
   }
@@ -146,7 +157,6 @@ class _CharactersListWidgetState extends State<CharactersListWidget>
     return Padding(
       padding: const EdgeInsets.only(top: 8, right: 8, left: 8),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           SizedBox(
@@ -154,21 +164,21 @@ class _CharactersListWidgetState extends State<CharactersListWidget>
             height: 64,
             child: Padding(
               padding: const EdgeInsets.only(top: 8, bottom: 4),
-              child: Container(
+              child: DecoratedBox(
                 decoration: const BoxDecoration(
                   color: Color(0xFFF8FAFB),
                   borderRadius: BorderRadius.only(
-                    bottomRight: Radius.circular(13.0),
-                    bottomLeft: Radius.circular(13.0),
-                    topLeft: Radius.circular(13.0),
-                    topRight: Radius.circular(13.0),
+                    bottomRight: Radius.circular(13),
+                    bottomLeft: Radius.circular(13),
+                    topLeft: Radius.circular(13),
+                    topRight: Radius.circular(13),
                   ),
                 ),
                 child: Row(
                   children: <Widget>[
                     Expanded(
                       child: Container(
-                        padding: const EdgeInsets.only(left: 0, right: 0),
+                        padding: EdgeInsets.zero,
                         child: TextFormField(
                           controller: searchTextController,
                           style: const TextStyle(
@@ -198,18 +208,19 @@ class _CharactersListWidgetState extends State<CharactersListWidget>
                       ),
                     ),
                     GestureDetector(
-                        onTap: () {
-                          context
-                              .read<CharactersCubit>()
-                              .setNameFilter(searchTextController.text);
+                      onTap: () {
+                        context
+                            .read<CharactersCubit>()
+                            .setNameFilter(searchTextController.text);
 
-                          context.read<CharactersCubit>().loadCharacters(1);
-                        },
-                        child: const SizedBox(
-                          width: 60,
-                          height: 60,
-                          child: Icon(Icons.search, color: Color(0xFFB9BABC)),
-                        ))
+                        context.read<CharactersCubit>().loadCharacters();
+                      },
+                      child: const SizedBox(
+                        width: 60,
+                        height: 60,
+                        child: Icon(Icons.search, color: Color(0xFFB9BABC)),
+                      ),
+                    )
                   ],
                 ),
               ),
@@ -225,15 +236,15 @@ class _CharactersListWidgetState extends State<CharactersListWidget>
 }
 
 class CharacterItemWidget extends StatelessWidget {
-  const CharacterItemWidget(
-      {Key? key,
-      this.character,
-      this.animationController,
-      this.animation,
-      required this.callback})
-      : super(key: key);
+  const CharacterItemWidget({
+    Key? key,
+    this.character,
+    this.animationController,
+    this.animation,
+    required this.callback,
+  }) : super(key: key);
 
-  final Function(String) callback;
+  final void Function(String) callback;
   final UiCharacter? character;
   final AnimationController? animationController;
   final Animation<double>? animation;
@@ -247,7 +258,10 @@ class CharacterItemWidget extends StatelessWidget {
           opacity: animation!,
           child: Transform(
             transform: Matrix4.translationValues(
-                0.0, 50 * (1.0 - animation!.value), 0.0),
+              0,
+              50 * (1.0 - animation!.value),
+              0,
+            ),
             child: InkWell(
               splashColor: Colors.transparent,
               onTap: () {
@@ -261,11 +275,11 @@ class CharacterItemWidget extends StatelessWidget {
                     Column(
                       children: <Widget>[
                         Expanded(
-                          child: Container(
+                          child: DecoratedBox(
                             decoration: BoxDecoration(
                               color: HexColor('#edeff0'),
                               borderRadius:
-                                  const BorderRadius.all(Radius.circular(16.0)),
+                                  const BorderRadius.all(Radius.circular(16)),
                               // border: new Border.all(
                               //     color: DesignCourseAppTheme.notWhite),
                             ),
@@ -276,7 +290,10 @@ class CharacterItemWidget extends StatelessWidget {
                                     children: <Widget>[
                                       Padding(
                                         padding: const EdgeInsets.only(
-                                            top: 16, left: 16, right: 16),
+                                          top: 16,
+                                          left: 16,
+                                          right: 16,
+                                        ),
                                         child: Text(
                                           character!.name,
                                           textAlign: TextAlign.center,
@@ -291,15 +308,14 @@ class CharacterItemWidget extends StatelessWidget {
                                       ),
                                       Padding(
                                         padding: const EdgeInsets.only(
-                                            top: 8,
-                                            left: 8,
-                                            right: 8,
-                                            bottom: 8),
+                                          top: 8,
+                                          left: 8,
+                                          right: 8,
+                                          bottom: 8,
+                                        ),
                                         child: Row(
                                           mainAxisAlignment:
                                               MainAxisAlignment.center,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
                                           children: <Widget>[
                                             Text(
                                               character!.species,
@@ -314,7 +330,7 @@ class CharacterItemWidget extends StatelessWidget {
                                             ),
                                             const SizedBox(width: 4),
                                             Text(
-                                              ".",
+                                              '.',
                                               textAlign: TextAlign.center,
                                               style: TextStyle(
                                                 fontWeight: FontWeight.w800,
@@ -353,34 +369,35 @@ class CharacterItemWidget extends StatelessWidget {
                         ),
                       ],
                     ),
-                    Stack(children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.only(right: 16, left: 16),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(16.0)),
-                            boxShadow: <BoxShadow>[
-                              BoxShadow(
-                                  color: Colors.grey.withOpacity(0.9),
-                                  offset: const Offset(0.0, 0.0),
-                                  blurRadius: 8.0),
-                            ],
-                          ),
-                          child: ClipRRect(
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(16.0)),
-                            child: AspectRatio(
+                    Stack(
+                      children: <Widget>[
+                        Padding(
+                          padding: const EdgeInsets.only(right: 16, left: 16),
+                          child: DecoratedBox(
+                            decoration: BoxDecoration(
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(16)),
+                              boxShadow: <BoxShadow>[
+                                BoxShadow(
+                                    color: Colors.grey.withOpacity(0.9),
+                                    blurRadius: 8),
+                              ],
+                            ),
+                            child: ClipRRect(
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(16)),
+                              child: AspectRatio(
                                 aspectRatio: 1,
-                                child: Image.network(character!.image)),
+                                child: Image.network(character!.image),
+                              ),
+                            ),
                           ),
                         ),
-                      ),
-                      Positioned(
-                        bottom: 12,
-                        right: 24,
-                        //give the values according to your requirement
-                        child: LikeButton(
+                        Positioned(
+                          bottom: 12,
+                          right: 24,
+                          //give the values according to your requirement
+                          child: LikeButton(
                             size: 24,
                             circleColor: const CircleColor(
                                 start: Color(0xffff4545),
@@ -397,9 +414,11 @@ class CharacterItemWidget extends StatelessWidget {
                                     : const Color(0xa3ffffff),
                                 size: 24,
                               );
-                            }),
-                      ),
-                    ]),
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
                   ],
                 ),
               ),
@@ -412,7 +431,7 @@ class CharacterItemWidget extends StatelessWidget {
 }
 
 class HexColor extends Color {
-  HexColor(final String hexColor) : super(_getColorFromHex(hexColor));
+  HexColor(String hexColor) : super(_getColorFromHex(hexColor));
 
   static int _getColorFromHex(String hexColor) {
     hexColor = hexColor.toUpperCase().replaceAll('#', '');

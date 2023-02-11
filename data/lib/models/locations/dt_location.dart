@@ -6,10 +6,10 @@ part 'dt_location.g.dart';
 class DTLocation {
   DTLocation(this.id, this.name, this.type, this.dimension, this.created);
 
-  String id, name, type, dimension, created;
-
   factory DTLocation.fromJson(Map<String, dynamic> json) =>
       _$DTLocationFromJson(json);
+
+  String id, name, type, dimension, created;
 
   Map<String, dynamic> toJson() => _$DTLocationToJson(this);
 }

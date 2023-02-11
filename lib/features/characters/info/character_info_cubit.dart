@@ -1,18 +1,20 @@
 import 'package:bloc/bloc.dart';
+import 'package:domain/entities/api_response.dart' as api_response;
+import 'package:domain/entities/characters/dm_character_info.dart';
+import 'package:domain/use_cases/get_character_info_usecase.dart';
 import 'package:get_it/get_it.dart';
 import 'package:rick_morty_flutter/models/ui_state.dart';
-import 'package:domain/use_cases/get_character_info_usecase.dart';
-import 'package:domain/entities/api_response.dart' as api_response;
+
 import '../../../ui/model/characters/ui_character_info.dart';
 import '../../../ui/model/characters/ui_character_info_mapper.dart';
 
 class CharacterInfoCubit extends Cubit<UiState<UiCharacterInfo>> {
-  final uiMapper = GetIt.I.get<UiCharacterInfoMapper>();
-  final getCharacterInfoUseCase = GetIt.I.get<GetCharacterInfoUseCase>();
-
   CharacterInfoCubit(String characterId) : super(Initial()) {
     loadCharacterInfo(id: int.parse(characterId));
   }
+
+  final uiMapper = GetIt.I.get<UiCharacterInfoMapper>();
+  final getCharacterInfoUseCase = GetIt.I.get<GetCharacterInfoUseCase>();
 
   /// Load character information
   void loadCharacterInfo({required int id}) {
@@ -29,8 +31,9 @@ class CharacterInfoCubit extends Cubit<UiState<UiCharacterInfo>> {
       if (responseData is api_response.Failure) {
         emit(Failure(exception: (responseData as api_response.Failure).error));
       } else if (responseData is api_response.Success) {
-        var characters = (responseData as api_response.Success);
-        final uiCharacterInfo = uiMapper.mapToPresentation(characters.data);
+        final characters = responseData as api_response.Success;
+        final uiCharacterInfo =
+            uiMapper.mapToPresentation(characters.data as CharacterInfo);
         emit(Success(data: uiCharacterInfo));
       }
     }
@@ -38,7 +41,7 @@ class CharacterInfoCubit extends Cubit<UiState<UiCharacterInfo>> {
 
   void complete() {}
 
-  error(e) {
+  void error(Object e) {
     if (e is Exception) {
       emit(Failure(exception: e));
     }

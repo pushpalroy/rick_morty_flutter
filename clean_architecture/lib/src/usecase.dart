@@ -1,6 +1,7 @@
-import 'package:rxdart/rxdart.dart';
-import 'package:logging/logging.dart';
 import 'dart:async';
+
+import 'package:logging/logging.dart';
+import 'package:rxdart/rxdart.dart';
 
 /// The abstract [UseCase] to be implemented by all usecases.
 /// [T] Is the type to be returned by the [UseCase] to the [Presenter]

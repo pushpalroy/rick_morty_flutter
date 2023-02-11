@@ -6,17 +6,19 @@ import 'package:injectable/injectable.dart';
 
 @singleton
 class GraphQLService {
-  late final GraphQLClient _graphQLClient;
-
   GraphQLService() {
-    final link = HttpLink("https://rickandmortyapi.com/graphql");
+    final link = HttpLink('https://rickandmortyapi.com/graphql');
     _graphQLClient = GraphQLClient(link: link, cache: GraphQLCache());
   }
 
-  Future<ApiResponse> performQuery(String query,
-      {required Map<String, dynamic> variables}) async {
+  late final GraphQLClient _graphQLClient;
+
+  Future<ApiResponse<dynamic>> performQuery(
+    String query, {
+    required Map<String, dynamic> variables,
+  }) async {
     try {
-      QueryOptions options = QueryOptions(
+      final options = QueryOptions(
         document: gql(query),
         variables: variables,
       );
@@ -27,7 +29,8 @@ class GraphQLService {
         var errorCode =
             result.context.entry<HttpLinkResponseContext>()?.statusCode ?? 0;
         return Failure(
-            error: APIException(result.exception.toString(), errorCode, ''));
+          error: APIException(result.exception.toString(), errorCode, ''),
+        );
       } else {
         return Success(data: result.data);
       }
@@ -36,10 +39,11 @@ class GraphQLService {
     }
   }
 
-  Future<QueryResult> performMutation(String query,
-      {required Map<String, dynamic> variables}) async {
-    MutationOptions options =
-        MutationOptions(document: gql(query), variables: variables);
+  Future<QueryResult> performMutation(
+    String query, {
+    required Map<String, dynamic> variables,
+  }) async {
+    final options = MutationOptions(document: gql(query), variables: variables);
 
     final result = await _graphQLClient.mutate(options);
 

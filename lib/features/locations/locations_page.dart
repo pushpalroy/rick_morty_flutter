@@ -23,7 +23,7 @@ class LocationsPage extends StatelessWidget {
 class LocationsListWidget extends StatefulWidget {
   const LocationsListWidget({Key? key, this.callBack}) : super(key: key);
 
-  final Function()? callBack;
+  final void Function()? callBack;
 
   @override
   State<StatefulWidget> createState() => _LocationsListWidgetState();
@@ -49,39 +49,42 @@ class _LocationsListWidgetState extends State<LocationsListWidget>
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<LocationsCubit, UiState<List<UiLocation>>>(
-        builder: (context, state) {
-      return state is Loading
-          ? const Align(
-              alignment: Alignment.center,
-              child: RmProgressBar(),
-            )
-          : state is Success
-              ? FutureBuilder<bool>(
-                  future: delay(),
-                  builder:
-                      (BuildContext context, AsyncSnapshot<bool> snapshot) {
-                    if (!snapshot.hasData) {
-                      return const SizedBox();
-                    } else {
-                      return ListView.builder(
+      builder: (context, state) {
+        return state is Loading
+            ? const Align(
+                child: RmProgressBar(),
+              )
+            : state is Success
+                ? FutureBuilder<bool>(
+                    future: delay(),
+                    builder:
+                        (BuildContext context, AsyncSnapshot<bool> snapshot) {
+                      if (!snapshot.hasData) {
+                        return const SizedBox();
+                      } else {
+                        return ListView.builder(
                           padding: const EdgeInsets.all(16),
-                          itemCount: (state as Success).data.length,
+                          itemCount: (state as Success).data.length as int?,
                           itemBuilder: (BuildContext context, int index) {
                             return LocationItemWidget(
-                                location: (state as Success).data[index]);
-                          });
-                    }
-                  },
-                )
-              : Container();
-    });
+                              location:
+                                  (state as Success).data[index] as UiLocation,
+                            );
+                          },
+                        );
+                      }
+                    },
+                  )
+                : Container();
+      },
+    );
   }
 
   Animation<double> getListAnimation(int count, int index) {
-    return Tween<double>(begin: 0.0, end: 1.0).animate(
+    return Tween<double>(begin: 0, end: 1).animate(
       CurvedAnimation(
         parent: animationController!,
-        curve: const Interval(0.5, 1.0, curve: Curves.fastLinearToSlowEaseIn),
+        curve: const Interval(0.5, 1, curve: Curves.fastLinearToSlowEaseIn),
       ),
     );
   }
@@ -101,27 +104,30 @@ class LocationItemWidget extends StatelessWidget {
         child: Column(
           children: <Widget>[
             Expanded(
-              child: Container(
+              child: DecoratedBox(
                 decoration: BoxDecoration(
                   color: const Color(0xFFF8F8F8),
                   boxShadow: <BoxShadow>[
                     BoxShadow(
-                        color: Colors.grey.withOpacity(0.3),
-                        offset: const Offset(0.0, 4.0),
-                        blurRadius: 6.0),
+                      color: Colors.grey.withOpacity(0.3),
+                      offset: const Offset(0, 4),
+                      blurRadius: 6,
+                    ),
                   ],
-                  borderRadius: const BorderRadius.all(Radius.circular(8.0)),
+                  borderRadius: const BorderRadius.all(Radius.circular(8)),
                 ),
                 child: Column(
                   children: <Widget>[
                     Expanded(
                       child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           Padding(
                             padding: const EdgeInsets.only(
-                                top: 16, left: 16, right: 16),
+                              top: 16,
+                              left: 16,
+                              right: 16,
+                            ),
                             child: Text(
                               location!.name,
                               textAlign: TextAlign.start,
@@ -138,8 +144,6 @@ class LocationItemWidget extends StatelessWidget {
                             padding: const EdgeInsets.only(
                                 top: 8, left: 16, right: 8),
                             child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.center,
                               children: <Widget>[
                                 Text(
                                   location!.type,
@@ -154,7 +158,7 @@ class LocationItemWidget extends StatelessWidget {
                                 ),
                                 const SizedBox(width: 4),
                                 Text(
-                                  ".",
+                                  '.',
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                     fontWeight: FontWeight.w800,
@@ -196,7 +200,7 @@ class LocationItemWidget extends StatelessWidget {
 }
 
 class HexColor extends Color {
-  HexColor(final String hexColor) : super(_getColorFromHex(hexColor));
+  HexColor(String hexColor) : super(_getColorFromHex(hexColor));
 
   static int _getColorFromHex(String hexColor) {
     hexColor = hexColor.toUpperCase().replaceAll('#', '');

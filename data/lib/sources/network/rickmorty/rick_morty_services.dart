@@ -8,12 +8,14 @@ import '../graphql/graphql_service.dart';
 
 @injectable
 class RickMortyServices {
-  final GraphQLService service;
-
   RickMortyServices(this.service);
 
+  final GraphQLService service;
+
   Future<ApiResponse<DTCharactersList>> getCharactersList(
-      int page, String nameFilter) async {
+    int page,
+    String nameFilter,
+  ) async {
     final query = '''
       query {
         characters(page: $page, filter: { name: "$nameFilter" }) {
@@ -32,10 +34,12 @@ class RickMortyServices {
     ''';
 
     final response = await service.performQuery(query, variables: {});
-    log("$response");
+    log('$response');
 
     if (response is Success) {
-      return Success(data: DTCharactersList.fromJson(response.data));
+      return Success(
+        data: DTCharactersList.fromJson(response.data as Map<String, dynamic>),
+      );
     } else {
       return Failure(error: (response as Failure).error);
     }
@@ -62,14 +66,16 @@ class RickMortyServices {
     }''';
 
     final response = await service.performQuery(query, variables: {});
-    log("$response");
+    log('$response');
 
     if (response is Success) {
       DTCharacterInfo? info;
       try {
-        info = DTCharacterInfo.fromJson(response.data['character']);
-      } catch (e) {
-        log("error", error: e);
+        info = DTCharacterInfo.fromJson(
+          response.data['character'] as Map<String, dynamic>,
+        );
+      } on Exception catch (e) {
+        log('error', error: e);
         return Failure(error: Exception(e));
       }
       return Success(data: info);
@@ -97,10 +103,12 @@ class RickMortyServices {
     ''';
 
     final response = await service.performQuery(query, variables: {});
-    log("$response");
+    log('$response');
 
     if (response is Success) {
-      return Success(data: DTLocationsList.fromJson(response.data));
+      return Success(
+        data: DTLocationsList.fromJson(response.data as Map<String, dynamic>),
+      );
     } else {
       return Failure(error: (response as Failure).error);
     }

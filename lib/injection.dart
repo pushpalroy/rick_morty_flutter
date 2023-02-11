@@ -1,6 +1,6 @@
+import 'package:data/injection.dart';
 import 'package:get_it/get_it.dart';
 import 'package:injectable/injectable.dart';
-import 'package:data/injection.dart';
 import 'package:rick_morty_flutter/injection.config.dart';
 
 @InjectableInit(

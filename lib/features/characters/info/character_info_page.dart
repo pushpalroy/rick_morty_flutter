@@ -35,9 +35,9 @@ class _CharacterInfoWidget extends State<CharacterInfoWidget>
     with TickerProviderStateMixin {
   AnimationController? animationController;
   Animation<double>? animation;
-  double opacity1 = 0.0;
-  double opacity2 = 0.0;
-  double opacity3 = 0.0;
+  double opacity1 = 0;
+  double opacity2 = 0;
+  double opacity3 = 0;
 
   @override
   void initState() {
@@ -50,44 +50,52 @@ class _CharacterInfoWidget extends State<CharacterInfoWidget>
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<CharacterInfoCubit, UiState<UiCharacterInfo>>(
-        builder: (context, state) {
-      return state is Success
-          ? Container(
-              color: Colors.white,
-              child: getCharacterInfoWidget(
+      builder: (context, state) {
+        return state is Success
+            ? ColoredBox(
+                color: Colors.white,
+                child: getCharacterInfoWidget(
                   context,
                   animationController,
                   opacity1,
                   opacity2,
                   opacity3,
-                  (state as Success).data.image,
-                  (state as Success).data.name,
-                  (state as Success).data.status,
-                  (state as Success).data.species,
-                  (state as Success).data.gender,
-                  (state as Success).data.origin,
-                  (state as Success).data.location))
-          : Shimmer.fromColors(
-              baseColor: Colors.grey[400]!,
-              highlightColor: Colors.grey[300]!,
-              child: getCharacterInfoWidgetLoader(context),
-            );
-    });
+                  (state as Success).data.image as String,
+                  (state as Success).data.name as String,
+                  (state as Success).data.status as String,
+                  (state as Success).data.species as String,
+                  (state as Success).data.gender as String,
+                  (state as Success).data.origin as String,
+                  (state as Success).data.location as String,
+                ),
+              )
+            : Shimmer.fromColors(
+                baseColor: Colors.grey[400]!,
+                highlightColor: Colors.grey[300]!,
+                child: getCharacterInfoWidgetLoader(context),
+              );
+      },
+    );
   }
 
   AnimationController getAnimationController() {
     return AnimationController(
-        duration: const Duration(milliseconds: 1000), vsync: this);
+      duration: const Duration(milliseconds: 1000),
+      vsync: this,
+    );
   }
 
   Animation<double> createAnimation() {
-    return Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(
+    return Tween<double>(begin: 0, end: 1).animate(
+      CurvedAnimation(
         parent: animationController!,
-        curve: const Interval(0, 1.0, curve: Curves.fastOutSlowIn)));
+        curve: const Interval(0, 1, curve: Curves.fastOutSlowIn),
+      ),
+    );
   }
 
   Future<void> setData() async {
-    animationController?.forward();
+    await animationController?.forward();
     await Future<dynamic>.delayed(const Duration(milliseconds: 200));
     setState(() {
       opacity1 = 1.0;

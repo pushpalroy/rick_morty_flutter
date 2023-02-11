@@ -1,6 +1,6 @@
+import 'package:data/injection.config.dart';
 import 'package:get_it/get_it.dart';
 import 'package:injectable/injectable.dart';
-import 'package:data/injection.config.dart';
 
 @InjectableInit(
   initializerName: r'$initGetIt', // default
