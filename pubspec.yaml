@@ -45,6 +45,7 @@ dependencies:
   pedantic_mono: ^1.21.1
   url_strategy: ^0.2.0
   logging: ^1.0.2
+  path: ^1.8.2
 
   clean_architecture:
     path: ./clean_architecture

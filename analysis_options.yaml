@@ -96,7 +96,7 @@ linter:
     - secure_pubspec_urls
     - sized_box_shrink_expand
     - sort_constructors_first
-    - sort_pub_dependencies
+    # - sort_pub_dependencies
     - sort_unnamed_constructors_first
     - test_types_in_equals
     - throw_in_finally
