@@ -55,6 +55,15 @@ The project architecture has been inspired from [Praxis Flutter](https://github.
 
 <p>Rick & Morty Flutter is under active development.</p>
 
+### Testing 🧐🧐
+```
+Integration tests
+flutter drive \
+--driver=test_driver/integration_test.dart \
+--target=integration_test/app_test.dart \
+--flavor=development
+```
+
 ### Find this project useful ? ❤️
 
 - Support it by clicking the ⭐️ button on the upper right of this page. ✌️
