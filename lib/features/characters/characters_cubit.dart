@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:bloc/bloc.dart';
 import 'package:domain/entities/api_response.dart' as api_response;
 import 'package:domain/entities/characters/dm_character.dart';
@@ -12,11 +14,12 @@ class CharactersCubit extends Cubit<UiState<List<UiCharacter>>> {
     loadCharacters();
   }
 
-  final uiMapper = GetIt.I.get<UiCharacterMapper>();
-  final getRickMortyCharactersUseCase =
+  final _uiMapper = GetIt.I.get<UiCharacterMapper>();
+  final _getRickMortyCharactersUseCase =
       GetIt.I.get<GetRickMortyCharactersUseCase>();
-  final List<UiCharacter> charactersToDisplayInUi = [];
-  late bool isFilterRequest = false;
+  final List<UiCharacter> _charactersToDisplayInUi = [];
+  late bool _isFilterRequest = false;
+
   late String nameFilter = '';
   bool isPageLoadInProgress = false;
   int page = 1;
@@ -26,8 +29,8 @@ class CharactersCubit extends Cubit<UiState<List<UiCharacter>>> {
     if (page == 1) {
       emit(Loading());
     }
-    isFilterRequest = nameFilter.isNotEmpty;
-    getRickMortyCharactersUseCase.perform(
+    _isFilterRequest = nameFilter.isNotEmpty;
+    _getRickMortyCharactersUseCase.perform(
       handleResponse,
       error,
       complete,
@@ -46,30 +49,34 @@ class CharactersCubit extends Cubit<UiState<List<UiCharacter>>> {
       } else if (responseData is api_response.Success) {
         final characters = responseData as api_response.Success;
         final uiCharacters =
-            uiMapper.mapToPresentation(characters.data as CharacterList);
+            _uiMapper.mapToPresentation(characters.data as CharacterList);
         if (uiCharacters.characters.isNotEmpty) {
-          if (isFilterRequest) {
-            charactersToDisplayInUi.clear();
+          if (_isFilterRequest) {
+            _charactersToDisplayInUi.clear();
           }
-          charactersToDisplayInUi.addAll(uiCharacters.characters);
+          _charactersToDisplayInUi.addAll(uiCharacters.characters);
         }
-        emit(Success(data: charactersToDisplayInUi));
+        emit(Success(data: _charactersToDisplayInUi));
       }
     }
     isPageLoadInProgress = false;
   }
 
-  void complete() {}
+  void complete() {
+    log('Fetching characters list is complete.');
+  }
 
   void error(Object e) {
+    log('Error in fetching characters list');
     if (e is Exception) {
+      log('Error in fetching characters list: $e');
       emit(Failure(exception: e));
     }
   }
 
   @override
   Future<void> close() {
-    getRickMortyCharactersUseCase.dispose();
+    _getRickMortyCharactersUseCase.dispose();
     return super.close();
   }
 }

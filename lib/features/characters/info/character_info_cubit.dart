@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:bloc/bloc.dart';
 import 'package:domain/entities/api_response.dart' as api_response;
 import 'package:domain/entities/characters/dm_character_info.dart';
@@ -13,13 +15,13 @@ class CharacterInfoCubit extends Cubit<UiState<UiCharacterInfo>> {
     loadCharacterInfo(id: int.parse(characterId));
   }
 
-  final uiMapper = GetIt.I.get<UiCharacterInfoMapper>();
-  final getCharacterInfoUseCase = GetIt.I.get<GetCharacterInfoUseCase>();
+  final _uiMapper = GetIt.I.get<UiCharacterInfoMapper>();
+  final _getCharacterInfoUseCase = GetIt.I.get<GetCharacterInfoUseCase>();
 
   /// Load character information
   void loadCharacterInfo({required int id}) {
     emit(Loading());
-    getCharacterInfoUseCase.perform(handleResponse, error, complete, id);
+    _getCharacterInfoUseCase.perform(handleResponse, error, complete, id);
   }
 
   /// Handle response data
@@ -33,23 +35,27 @@ class CharacterInfoCubit extends Cubit<UiState<UiCharacterInfo>> {
       } else if (responseData is api_response.Success) {
         final characters = responseData as api_response.Success;
         final uiCharacterInfo =
-            uiMapper.mapToPresentation(characters.data as CharacterInfo);
+            _uiMapper.mapToPresentation(characters.data as CharacterInfo);
         emit(Success(data: uiCharacterInfo));
       }
     }
   }
 
-  void complete() {}
+  void complete() {
+    log('Fetching character information is complete.');
+  }
 
   void error(Object e) {
+    log('Error in fetching character information');
     if (e is Exception) {
+      log('Error in fetching characters information: $e');
       emit(Failure(exception: e));
     }
   }
 
   @override
   Future<void> close() {
-    getCharacterInfoUseCase.dispose();
+    _getCharacterInfoUseCase.dispose();
     return super.close();
   }
 }

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:bloc/bloc.dart';
 import 'package:domain/entities/api_response.dart' as api_response;
 import 'package:domain/entities/locations/dm_location.dart';
@@ -13,14 +15,14 @@ class LocationsCubit extends Cubit<UiState<List<UiLocation>>> {
     loadLocations();
   }
 
-  final uiMapper = GetIt.I.get<UiLocationMapper>();
-  final getLocationsUseCase = GetIt.I.get<GetLocationsUseCase>();
-  final List<UiLocation> locationsToDisplayInUi = [];
+  final _uiMapper = GetIt.I.get<UiLocationMapper>();
+  final _getLocationsUseCase = GetIt.I.get<GetLocationsUseCase>();
+  final List<UiLocation> _locationsToDisplayInUi = [];
 
   /// Load Rick & Morty locations
   void loadLocations() {
     emit(Loading());
-    getLocationsUseCase.perform(handleResponse, error, complete);
+    _getLocationsUseCase.perform(handleResponse, error, complete);
   }
 
   /// Handle response data
@@ -34,26 +36,30 @@ class LocationsCubit extends Cubit<UiState<List<UiLocation>>> {
       } else if (responseData is api_response.Success) {
         final locations = responseData as api_response.Success;
         final uiLocations =
-            uiMapper.mapToPresentation(locations.data as LocationList);
+            _uiMapper.mapToPresentation(locations.data as LocationList);
         if (uiLocations.locations.isNotEmpty) {
-          locationsToDisplayInUi.addAll(uiLocations.locations);
+          _locationsToDisplayInUi.addAll(uiLocations.locations);
         }
-        emit(Success(data: locationsToDisplayInUi));
+        emit(Success(data: _locationsToDisplayInUi));
       }
     }
   }
 
-  void complete() {}
+  void complete() {
+    log('Fetching locations list is complete.');
+  }
 
   void error(Object e) {
+    log('Error in fetching locations list.');
     if (e is Exception) {
+      log('Error in fetching locations list: $e');
       emit(Failure(exception: e));
     }
   }
 
   @override
   Future<void> close() {
-    getLocationsUseCase.dispose();
+    _getLocationsUseCase.dispose();
     return super.close();
   }
 }
