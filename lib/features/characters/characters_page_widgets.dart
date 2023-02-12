@@ -38,6 +38,7 @@ Widget buildCharactersListWidget({
                     return false;
                   },
                   child: GridView(
+                    key: const Key('characterListView'),
                     shrinkWrap: true,
                     padding: const EdgeInsets.all(8),
                     physics: const BouncingScrollPhysics(),
@@ -54,6 +55,7 @@ Widget buildCharactersListWidget({
                         final count = charactersList.length;
                         animationController?.forward();
                         return CharacterItemWidget(
+                          key: Key('characterItem:$index'),
                           callback: (characterId) {
                             // Navigate to character information
                             context.push(
