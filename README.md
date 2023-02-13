@@ -1,7 +1,6 @@
 ## Rick & Morty - Flutter
 
-  <p align="left"> A Flutter clean-architecture project that uses BLoC and GraphQL with best practices.</p>
-  <p align="left"> Includes e2e integration tests, widget tests and unit tests.</p>
+  <p align="left"> A Flutter clean-architecture project that uses BLoC and GraphQL with best practices. Includes e2e integration tests, widget tests and unit tests.</p>
 
   <p align="left">
       <a href = "https://github.com/Solido/awesome-flutter">
@@ -65,7 +64,7 @@ To generate code for injectable, json serialization and mockito
 flutter packages pub run build_runner build --delete-conflicting-outputs
 ```
 
-To run the desired flavor either use the launch configuration
+To run the desired flavor either use the launch configuration in VSCode/Android Studio or use the following commands:
 
 ```
 # Development
