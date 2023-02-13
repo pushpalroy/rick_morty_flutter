@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -37,11 +38,29 @@ class CharactersScreenRobot {
     await tester.ensureVisible(itemFinder);
     await tester.tap(itemFinder);
     await tester.pumpAndSettle();
+    await tester.pump(const Duration(seconds: 2));
   }
 
   Future<void> navigateBack() async {
-    find.byTooltip('Back');
+    await tester.pageBack();
     await tester.pumpAndSettle();
+    await tester.pump(const Duration(seconds: 1));
+  }
+
+  Future<void> typeInSearchBox({required String searchInput}) async {
+    // Find textField
+    final searchText = find.byKey(const ValueKey('searchTextField'));
+    // Ensure there is a search field on the page
+    expect(searchText, findsOneWidget);
+    // Enter text
+    await tester.enterText(searchText, searchInput);
+    await tester.pumpAndSettle();
+    await tester.pump(const Duration(seconds: 1));
+    // Tap search button
+    final searchBtn = find.byKey(const ValueKey('searchBtn'));
+    await tester.tap(searchBtn);
+    await tester.pumpAndSettle();
+    await tester.pump(const Duration(seconds: 2));
   }
 }
 

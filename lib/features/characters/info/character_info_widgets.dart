@@ -199,13 +199,11 @@ Widget getCharacterInfoWidget(
               child: InkWell(
                 borderRadius:
                     BorderRadius.circular(AppBar().preferredSize.height),
-                child: const Icon(
-                  Icons.arrow_back_ios,
-                  color: Colors.black,
+                child: BackButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
                 ),
-                onTap: () {
-                  Navigator.pop(context);
-                },
               ),
             ),
           ),

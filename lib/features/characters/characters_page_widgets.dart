@@ -334,6 +334,7 @@ Widget getSearchBarUI(
                     child: Container(
                       padding: EdgeInsets.zero,
                       child: TextFormField(
+                        key: const ValueKey('searchTextField'),
                         controller: searchTextController,
                         style: const TextStyle(
                           fontFamily: 'WorkSans',
@@ -368,6 +369,7 @@ Widget getSearchBarUI(
                         ..loadCharacters();
                     },
                     child: const SizedBox(
+                      key: ValueKey('searchBtn'),
                       width: 60,
                       height: 60,
                       child: Icon(Icons.search, color: Color(0xFFB9BABC)),
