@@ -1,6 +1,7 @@
 ## Rick & Morty - Flutter
 
-  <p align="left"> A Flutter clean-architecture project that uses BLoC and GraphQL.</p>
+  <p align="left"> A Flutter clean-architecture project that uses BLoC and GraphQL with best practices.</p>
+  <p align="left"> Includes e2e integration tests, widget tests and unit tests.</p>
 
   <p align="left">
       <a href = "https://github.com/Solido/awesome-flutter">
@@ -22,14 +23,18 @@
 
 ### 👨‍💻 Tech stack
 
-| Tools               |                              Link                               |
-|:--------------------|:---------------------------------------------------------------:|
-| 🤖 State Management |      [flutter_bloc](https://pub.dev/packages/flutter_bloc)      |
-| 💚 Service Locator  |            [get_it](https://pub.dev/packages/get_it)            |
-| 💉 DI               |        [injectable](https://pub.dev/packages/injectable)        |
-| 🏛 Navigation       |         [go_router](https://pub.dev/packages/go_router)         |
-| 🌊 GraphQL client   |   [graphql_flutter](https://pub.dev/packages/graphql_flutter)   |
+| Tools               | Link                                                            |
+|:--------------------|:----------------------------------------------------------------|
+| 🤖 State Management | [flutter_bloc](https://pub.dev/packages/flutter_bloc)           |
+| 💚 Service Locator  | [get_it](https://pub.dev/packages/get_it)                       |
+| 💉 DI               | [injectable](https://pub.dev/packages/injectable)               |
+| 🏛 Navigation       | [go_router](https://pub.dev/packages/go_router)                 |
+| 🌊 GraphQL client   | [graphql_flutter](https://pub.dev/packages/graphql_flutter)     |
 | 🌐 Network State    | [connectivity_plus](https://pub.dev/packages/connectivity_plus) |
+| 📄 Serialization    | [json_serializable](https://pub.dev/packages/json_serializable) |
+| 💬 Lint             | [pedantic_mono](https://pub.dev/packages/pedantic_mono)         |
+| 🚀 BloC Test        | [bloc_test](https://pub.dev/packages/bloc_test)                 |
+| 🖊️ Mock            | [mockito](https://pub.dev/packages/mockito)                     |
 
 ### ⚒️ Architecture
 
@@ -52,9 +57,26 @@ from [Praxis Flutter](https://github.com/mutualmobile/PraxisFlutter).
   </tr>
 </table>
 
-### Status: 👩‍💻 In progress
+### How to run the project? ✅
 
-<p>Rick & Morty Flutter is under active development.</p>
+To generate code for injectable, json serialization and mockito
+
+```
+flutter packages pub run build_runner build --delete-conflicting-outputs
+```
+
+To run the desired flavor either use the launch configuration
+
+```
+# Development
+flutter run --flavor development --target lib/main_development.dart
+
+# Staging
+flutter run --flavor staging --target lib/main_staging.dart
+
+# Production
+flutter run --flavor production --target lib/main_production.dart
+```
 
 ### How to run tests? ✅
 
@@ -64,6 +86,14 @@ Integration tests
 flutter drive \
 --driver=test_driver/integration_test.dart \
 --target=integration_test/app_test.dart \
+--flavor=development
+```
+
+Unit tests
+
+```
+flutter test \
+test/repository/characters_repo_test.dart
 --flavor=development
 ```
 
