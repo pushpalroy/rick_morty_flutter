@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:like_button/like_button.dart';
-import 'package:rick_morty_flutter/features/characters/characters_cubit.dart';
 import 'package:rick_morty_flutter/routing/routes.dart';
 import 'package:rick_morty_flutter/ui/model/characters/ui_character.dart';
 
@@ -12,11 +10,12 @@ Widget buildCharactersListWidget({
   required AnimationController? animationController,
   required List<UiCharacter> charactersList,
   required Function onScrolledToEndCallback,
+  required Function onSearchBtnTapCallback,
 }) {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: <Widget>[
-      getSearchBarUI(context, searchTextController),
+      getSearchBarUI(context, searchTextController, onSearchBtnTapCallback),
       Flexible(
         child: Padding(
           padding: const EdgeInsets.only(top: 8),
@@ -306,8 +305,8 @@ class CharacterItemWidget extends StatelessWidget {
 Widget getSearchBarUI(
   BuildContext context,
   TextEditingController searchTextController,
+  Function onSearchBtnTapCallback,
 ) {
-  final cubit = context.read<CharactersCubit>();
   return Padding(
     padding: const EdgeInsets.only(top: 8, right: 8, left: 8),
     child: Row(
@@ -363,11 +362,7 @@ Widget getSearchBarUI(
                     ),
                   ),
                   GestureDetector(
-                    onTap: () {
-                      cubit
-                        ..nameFilter = searchTextController.text
-                        ..loadCharacters();
-                    },
+                    onTap: onSearchBtnTapCallback(),
                     child: const SizedBox(
                       key: ValueKey('searchBtn'),
                       width: 60,
