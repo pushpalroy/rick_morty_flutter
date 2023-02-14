@@ -26,7 +26,7 @@ class GraphQLService {
       final result = await _graphQLClient.query(options);
 
       if (result.hasException) {
-        var errorCode =
+        final errorCode =
             result.context.entry<HttpLinkResponseContext>()?.statusCode ?? 0;
         return Failure(
           error: APIException(result.exception.toString(), errorCode, ''),

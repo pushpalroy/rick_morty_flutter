@@ -1,3 +1,4 @@
+import 'package:data/sources/network/exceptions/api_exception.dart';
 import 'package:domain/entities/api_response.dart';
 import 'package:domain/entities/characters/dm_character.dart';
 import 'package:domain/repositories/characters/characters_repo.dart';
@@ -18,25 +19,27 @@ Future<void> main() async {
 
   group('characters repo test', () {
     test('test getRickAndMortyCharacters', () async {
-      final model = CharacterList([]);
+      final model = CharacterList([
+        Character('1', 'TestName', 'TestImage', 'TestStatus', 'TestSpecies')
+      ]);
 
       when(homeRepo.getRickAndMortyCharacters(1, '')).thenAnswer((_) async {
         return Future(() => Success(data: model));
       });
 
       final res = await homeRepo.getRickAndMortyCharacters(1, '');
-
       expect(res, isA<ApiResponse<CharacterList>>());
     });
 
-    test('test getRickAndMortyCharacters throws Exception', () {
+    test('test getRickAndMortyCharacters throws Exception', () async {
       when(homeRepo.getRickAndMortyCharacters(1, '')).thenAnswer((_) async {
-        throw Exception();
+        return Future(
+          () => Failure(error: Exception('TestMessage')),
+        );
       });
 
-      final res = homeRepo.getRickAndMortyCharacters(1, '');
-
-      expect(res, throwsException);
+      final res = await homeRepo.getRickAndMortyCharacters(1, '');
+      expect(res, isA<ApiResponse<CharacterList>>());
     });
   });
 }
