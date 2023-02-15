@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../../models/ui_state.dart';
-import '../../../ui/model/characters/ui_character_info.dart';
-import 'character_info_cubit.dart';
+import 'character_info_view_model.dart';
 import 'character_info_widgets.dart';
 
 class CharacterInfoPage extends StatelessWidget {
@@ -14,12 +13,13 @@ class CharacterInfoPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => CharacterInfoCubit(characterId),
-      child: BlocListener<CharacterInfoCubit, UiState<UiCharacterInfo>>(
-        child: const CharacterInfoWidget(),
-        listener: (context, state) {},
-      ),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (_) => CharacterInfoViewModel(characterId: characterId),
+        )
+      ],
+      child: const CharacterInfoWidget(),
     );
   }
 }
@@ -33,6 +33,7 @@ class CharacterInfoWidget extends StatefulWidget {
 
 class _CharacterInfoWidget extends State<CharacterInfoWidget>
     with TickerProviderStateMixin {
+  late CharacterInfoViewModel viewModel;
   AnimationController? animationController;
   Animation<double>? animation;
   double opacity1 = 0;
@@ -41,6 +42,10 @@ class _CharacterInfoWidget extends State<CharacterInfoWidget>
 
   @override
   void initState() {
+    viewModel = Provider.of<CharacterInfoViewModel>(context, listen: false);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      viewModel.loadCharacterInfo(id: int.parse(viewModel.characterId));
+    });
     animationController = getAnimationController();
     animation = createAnimation();
     setData();
@@ -49,9 +54,9 @@ class _CharacterInfoWidget extends State<CharacterInfoWidget>
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<CharacterInfoCubit, UiState<UiCharacterInfo>>(
-      builder: (context, state) {
-        return state is Success
+    return Consumer<CharacterInfoViewModel>(
+      builder: (_, viewModel, child) {
+        return viewModel.characterInfoUiState is Success
             ? ColoredBox(
                 color: Colors.white,
                 child: getCharacterInfoWidget(
@@ -60,13 +65,20 @@ class _CharacterInfoWidget extends State<CharacterInfoWidget>
                   opacity1,
                   opacity2,
                   opacity3,
-                  (state as Success).data.image as String,
-                  (state as Success).data.name as String,
-                  (state as Success).data.status as String,
-                  (state as Success).data.species as String,
-                  (state as Success).data.gender as String,
-                  (state as Success).data.origin as String,
-                  (state as Success).data.location as String,
+                  (viewModel.characterInfoUiState as Success).data.data.image
+                      as String,
+                  (viewModel.characterInfoUiState as Success).data.data.name
+                      as String,
+                  (viewModel.characterInfoUiState as Success).data.data.status
+                      as String,
+                  (viewModel.characterInfoUiState as Success).data.data.species
+                      as String,
+                  (viewModel.characterInfoUiState as Success).data.data.gender
+                      as String,
+                  (viewModel.characterInfoUiState as Success).data.data.origin
+                      as String,
+                  (viewModel.characterInfoUiState as Success).data.data.location
+                      as String,
                 ),
               )
             : Shimmer.fromColors(

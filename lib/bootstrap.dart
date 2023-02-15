@@ -1,12 +1,10 @@
 import 'dart:async';
 import 'dart:developer';
 import 'dart:io';
-import 'package:bloc/bloc.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_web_plugins/url_strategy.dart';
 import 'package:logging/logging.dart';
-import 'package:rick_morty_flutter/bloc/app_bloc_observer.dart';
 import 'package:rick_morty_flutter/injection.dart';
 
 Future<void> bootstrap(FutureOr<Widget> Function() builder, String env) async {
@@ -18,7 +16,6 @@ Future<void> bootstrap(FutureOr<Widget> Function() builder, String env) async {
 
   await runZonedGuarded(
     () async {
-      Bloc.observer = AppBlocObserver();
       runApp(await builder());
     },
     (error, stackTrace) => log(error.toString(), stackTrace: stackTrace),

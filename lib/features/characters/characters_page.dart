@@ -4,7 +4,7 @@ import 'package:rick_morty_flutter/features/characters/characters_page_widgets.d
 import 'package:rick_morty_flutter/models/ui_state.dart';
 import 'package:rick_morty_flutter/ui/model/characters/ui_character.dart';
 import '../../presentation/core/widgets/platform_progress_bar.dart';
-import 'characters_viewmodel.dart';
+import 'characters_view_model.dart';
 
 class CharactersPage extends StatelessWidget {
   const CharactersPage({Key? key}) : super(key: key);

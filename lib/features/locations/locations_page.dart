@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:rick_morty_flutter/features/locations/locations_cubit.dart';
+import 'package:provider/provider.dart';
+import 'package:rick_morty_flutter/features/locations/locations_view_model.dart';
 import 'package:rick_morty_flutter/models/ui_state.dart';
 import 'package:rick_morty_flutter/ui/model/locations/ui_location.dart';
 import '../../presentation/core/widgets/platform_progress_bar.dart';
@@ -10,12 +10,13 @@ class LocationsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => LocationsCubit(),
-      child: BlocListener<LocationsCubit, UiState<List<UiLocation>>>(
-        child: const LocationsListWidget(),
-        listener: (context, state) {},
-      ),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (_) => LocationsViewModel(),
+        )
+      ],
+      child: const LocationsListWidget(),
     );
   }
 }
@@ -31,11 +32,16 @@ class LocationsListWidget extends StatefulWidget {
 
 class _LocationsListWidgetState extends State<LocationsListWidget>
     with SingleTickerProviderStateMixin {
+  late LocationsViewModel viewModel;
   AnimationController? animationController;
   final searchTextController = TextEditingController();
 
   @override
   void initState() {
+    viewModel = Provider.of<LocationsViewModel>(context, listen: false);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      viewModel.loadLocations();
+    });
     animationController = AnimationController(
         duration: const Duration(milliseconds: 1500), vsync: this);
     super.initState();
@@ -48,13 +54,13 @@ class _LocationsListWidgetState extends State<LocationsListWidget>
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<LocationsCubit, UiState<List<UiLocation>>>(
-      builder: (context, state) {
-        return state is Loading
+    return Consumer<LocationsViewModel>(
+      builder: (_, viewModel, child) {
+        return viewModel.locationsUiState is Loading
             ? const Align(
                 child: RmProgressBar(),
               )
-            : state is Success
+            : viewModel.locationsUiState is Success
                 ? FutureBuilder<bool>(
                     future: delay(),
                     builder:
@@ -64,11 +70,13 @@ class _LocationsListWidgetState extends State<LocationsListWidget>
                       } else {
                         return ListView.builder(
                           padding: const EdgeInsets.all(16),
-                          itemCount: (state as Success).data.length as int?,
+                          itemCount: (viewModel.locationsUiState as Success)
+                              .data.data
+                              .length as int?,
                           itemBuilder: (BuildContext context, int index) {
                             return LocationItemWidget(
-                              location:
-                                  (state as Success).data[index] as UiLocation,
+                              location: (viewModel.locationsUiState as Success)
+                                  .data.data[index] as UiLocation,
                             );
                           },
                         );

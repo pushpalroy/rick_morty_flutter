@@ -61,7 +61,6 @@ class CharactersViewModel extends ChangeNotifier {
         charactersUiState = Success(
           data: CharactersUiState(_charactersToDisplayInUi, null),
         );
-        notifyListeners();
       }
     }
     isPageLoadInProgress = false;
@@ -76,7 +75,6 @@ class CharactersViewModel extends ChangeNotifier {
     if (e is Exception) {
       log('Error in fetching characters list: $e');
       charactersUiState = Failure(exception: e);
-      notifyListeners();
     }
   }
 
