@@ -52,6 +52,7 @@ dependencies:
     path: ./domain
   data:
     path: ./data
+  syncfusion_flutter_signaturepad: ^20.4.50
 
 
 dev_dependencies:
