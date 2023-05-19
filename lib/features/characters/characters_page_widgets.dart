@@ -108,12 +108,12 @@ Animation<double> getListAnimation(
 
 class CharacterItemWidget extends StatelessWidget {
   const CharacterItemWidget({
-    Key? key,
+    super.key,
     this.character,
     this.animationController,
     this.animation,
     required this.callback,
-  }) : super(key: key);
+  });
 
   final void Function(String) callback;
   final UiCharacter? character;

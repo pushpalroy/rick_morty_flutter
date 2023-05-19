@@ -1,16 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:rick_morty_flutter/presentation/core/widgets/abstract_plaform_widget.dart';
 
 class RmTabScaffold
     extends AbstractPlatformWidget<CupertinoTabScaffold, Widget> {
   const RmTabScaffold({
-    Key? key,
+    super.key,
     required this.tabsIcons,
     required this.tabBuilder,
     this.currentIndex = 0,
-  }) : super(key: key);
+  });
 
   /// List of icons, showed at the bottom navigation bar.
   final List<BottomNavigationBarItem> tabsIcons;
@@ -47,11 +46,11 @@ class RmTabScaffold
 
 class _MaterialTabScaffold extends StatefulWidget {
   const _MaterialTabScaffold({
-    Key? key,
+    super.key,
     required this.tabsIcons,
     required this.tabBuilder,
     this.currentIndex = 0,
-  }) : super(key: key);
+  });
 
   final List<BottomNavigationBarItem> tabsIcons;
   final Widget Function(BuildContext, int) tabBuilder;

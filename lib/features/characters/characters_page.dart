@@ -7,7 +7,7 @@ import 'package:rick_morty_flutter/ui/model/characters/ui_character.dart';
 import '../../presentation/core/widgets/platform_progress_bar.dart';
 
 class CharactersPage extends StatelessWidget {
-  const CharactersPage({Key? key}) : super(key: key);
+  const CharactersPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +22,7 @@ class CharactersPage extends StatelessWidget {
 }
 
 class CharactersListWidget extends StatefulWidget {
-  const CharactersListWidget({Key? key}) : super(key: key);
+  const CharactersListWidget({super.key});
 
   @override
   State<StatefulWidget> createState() => _CharactersListWidgetState();

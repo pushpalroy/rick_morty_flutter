@@ -1,9 +1,10 @@
 import 'dart:async';
 import 'dart:developer';
 import 'dart:io';
-import 'package:bloc/bloc.dart';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_web_plugins/url_strategy.dart';
 import 'package:logging/logging.dart';
 import 'package:rick_morty_flutter/bloc/app_bloc_observer.dart';

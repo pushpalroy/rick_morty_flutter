@@ -1,9 +1,9 @@
 import 'dart:developer';
 
-import 'package:bloc/bloc.dart';
 import 'package:domain/entities/api_response.dart' as api_response;
 import 'package:domain/entities/locations/dm_location.dart';
 import 'package:domain/use_cases/get_locations_usecase.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:rick_morty_flutter/models/ui_state.dart';
 import 'package:rick_morty_flutter/ui/model/locations/ui_location.dart';

@@ -1,13 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'package:rick_morty_flutter/presentation/core/widgets/abstract_plaform_widget.dart';
 
 class RmTextField
     extends AbstractPlatformWidget<CupertinoTextField, TextField> {
   const RmTextField(
-      {Key? key,
+      {super.key,
       this.controller,
       this.focusNode,
       this.maxLength,
@@ -16,8 +15,7 @@ class RmTextField
       this.autocorrect = true,
       this.toolbarOptions,
       this.hintText,
-      this.obscureText = false})
-      : super(key: key);
+      this.obscureText = false});
 
   final TextEditingController? controller;
   final FocusNode? focusNode;

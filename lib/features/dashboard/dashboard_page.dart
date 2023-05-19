@@ -9,7 +9,7 @@ import 'package:rick_morty_flutter/presentation/core/widgets/platform_scaffold.d
 import 'package:rick_morty_flutter/ui/model/characters/ui_character.dart';
 
 class DashboardPage extends StatelessWidget {
-  const DashboardPage({Key? key}) : super(key: key);
+  const DashboardPage({super.key});
 
   @override
   Widget build(BuildContext context) {

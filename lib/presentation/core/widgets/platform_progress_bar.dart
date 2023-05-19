@@ -7,8 +7,7 @@ class RmProgressBar
         CupertinoActivityIndicator,
         CircularProgressIndicator> {
 
-  const RmProgressBar({Key? key})
-      : super(key: key);
+  const RmProgressBar({super.key});
 
   @override
   CupertinoActivityIndicator buildCupertino(BuildContext context) {

@@ -4,9 +4,9 @@ import 'package:rick_morty_flutter/presentation/core/widgets/abstract_plaform_wi
 
 class RmButton
     extends AbstractPlatformWidget<CupertinoButton, MaterialButton> {
+  const RmButton({super.key, required this.title, required this.onPressed});
   final String title;
   final Function() onPressed;
-  const RmButton({Key? key, required this.title, required this.onPressed}) : super(key: key);
 
   @override
   CupertinoButton buildCupertino(BuildContext context) {

@@ -6,7 +6,7 @@ import 'package:rick_morty_flutter/ui/model/locations/ui_location.dart';
 import '../../presentation/core/widgets/platform_progress_bar.dart';
 
 class LocationsPage extends StatelessWidget {
-  const LocationsPage({Key? key}) : super(key: key);
+  const LocationsPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +21,7 @@ class LocationsPage extends StatelessWidget {
 }
 
 class LocationsListWidget extends StatefulWidget {
-  const LocationsListWidget({Key? key, this.callBack}) : super(key: key);
+  const LocationsListWidget({super.key, this.callBack});
 
   final void Function()? callBack;
 
@@ -37,7 +37,9 @@ class _LocationsListWidgetState extends State<LocationsListWidget>
   @override
   void initState() {
     animationController = AnimationController(
-        duration: const Duration(milliseconds: 1500), vsync: this);
+      duration: const Duration(milliseconds: 1500),
+      vsync: this,
+    );
     super.initState();
   }
 
@@ -91,7 +93,7 @@ class _LocationsListWidgetState extends State<LocationsListWidget>
 }
 
 class LocationItemWidget extends StatelessWidget {
-  const LocationItemWidget({Key? key, this.location}) : super(key: key);
+  const LocationItemWidget({super.key, this.location});
 
   final UiLocation? location;
 
@@ -142,7 +144,10 @@ class LocationItemWidget extends StatelessWidget {
                           ),
                           Padding(
                             padding: const EdgeInsets.only(
-                                top: 8, left: 16, right: 8),
+                              top: 8,
+                              left: 16,
+                              right: 8,
+                            ),
                             child: Row(
                               children: <Widget>[
                                 Text(
@@ -203,10 +208,10 @@ class HexColor extends Color {
   HexColor(String hexColor) : super(_getColorFromHex(hexColor));
 
   static int _getColorFromHex(String hexColor) {
-    hexColor = hexColor.toUpperCase().replaceAll('#', '');
-    if (hexColor.length == 6) {
-      hexColor = 'FF$hexColor';
+    var finalHexColor = hexColor.toUpperCase().replaceAll('#', '');
+    if (finalHexColor.length == 6) {
+      finalHexColor = 'FF$finalHexColor';
     }
-    return int.parse(hexColor, radix: 16);
+    return int.parse(finalHexColor, radix: 16);
   }
 }

@@ -1,9 +1,9 @@
 import 'dart:developer';
 
-import 'package:bloc/bloc.dart';
 import 'package:domain/entities/api_response.dart' as api_response;
 import 'package:domain/entities/characters/dm_character.dart';
 import 'package:domain/use_cases/get_rick_morty_characters_usecase.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:rick_morty_flutter/models/ui_state.dart';
 import 'package:rick_morty_flutter/ui/model/characters/ui_character.dart';

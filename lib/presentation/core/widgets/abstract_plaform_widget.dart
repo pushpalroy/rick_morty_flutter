@@ -5,7 +5,7 @@ import 'package:flutter/widgets.dart';
 
 class AbstractPlatformWidget<C extends Widget, M extends Widget>
     extends StatelessWidget {
-  const AbstractPlatformWidget({Key? key}) : super(key: key);
+  const AbstractPlatformWidget({super.key});
 
   @override
   Widget build(BuildContext context) {

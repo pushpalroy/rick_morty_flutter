@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 Future<dynamic> showAlertDialog({
   required BuildContext context,
@@ -14,17 +13,37 @@ Future<dynamic> showAlertDialog({
 }) async {
   if (kIsWeb) {
     return materialDialog(
-        context, title, content, cancelActionText, defaultActionText);
+      context,
+      title,
+      content,
+      cancelActionText,
+      defaultActionText,
+    );
   }
   return Platform.isIOS || Platform.isMacOS
       ? cupertinoDialog(
-          context, title, content, cancelActionText, defaultActionText)
+          context,
+          title,
+          content,
+          cancelActionText,
+          defaultActionText,
+        )
       : materialDialog(
-          context, title, content, cancelActionText, defaultActionText);
+          context,
+          title,
+          content,
+          cancelActionText,
+          defaultActionText,
+        );
 }
 
-Future<dynamic> cupertinoDialog(BuildContext context, String title,
-    String content, String? cancelActionText, String defaultActionText) {
+Future<dynamic> cupertinoDialog(
+  BuildContext context,
+  String title,
+  String content,
+  String? cancelActionText,
+  String defaultActionText,
+) {
   return showCupertinoDialog(
     context: context,
     builder: (context) => CupertinoAlertDialog(
@@ -45,8 +64,13 @@ Future<dynamic> cupertinoDialog(BuildContext context, String title,
   );
 }
 
-Future<dynamic> materialDialog(BuildContext context, String title,
-    String content, String? cancelActionText, String defaultActionText) {
+Future<dynamic> materialDialog(
+  BuildContext context,
+  String title,
+  String content,
+  String? cancelActionText,
+  String defaultActionText,
+) {
   return showDialog(
     context: context,
     builder: (context) => AlertDialog(
