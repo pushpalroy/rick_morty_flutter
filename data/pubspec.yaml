@@ -18,10 +18,6 @@ dependencies:
   dio: ^4.0.6
   shared_preferences: ^2.0.15
   equatable: ^2.0.5
-  firebase_core: ^1.21.1
-  firebase_auth: ^3.7.0
-  firebase_analytics: ^9.3.3
-  firebase_in_app_messaging: ^0.6.0+23
   google_sign_in: ^5.4.1
   domain:
     path: ../domain
