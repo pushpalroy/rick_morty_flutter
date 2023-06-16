@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rick_morty_flutter/features/characters/characters_page.dart';
+import 'package:rick_morty_flutter/features/episodes/episodes_page.dart';
 import 'package:rick_morty_flutter/features/locations/locations_page.dart';
 import 'package:rick_morty_flutter/presentation/core/widgets/platform_scaffold.dart';
 
@@ -50,7 +51,7 @@ class TabBarPage extends StatelessWidget {
               children: [
                 CharactersPage(),
                 LocationsPage(),
-                Icon(Icons.directions_bike),
+                EpisodesPage(),
               ],
             );
           },
